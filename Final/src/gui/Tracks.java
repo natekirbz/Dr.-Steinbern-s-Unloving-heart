@@ -36,6 +36,9 @@ public class Tracks extends Stage implements KeyListener{
 
         player.setLocation(laneX[lane], 300);
         add(player);
+        
+        start();
+        setRestartTime(500);
     }
 
     @Override
