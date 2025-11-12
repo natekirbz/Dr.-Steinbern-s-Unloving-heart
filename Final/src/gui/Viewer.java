@@ -12,12 +12,10 @@ import app.JApplication;
 import visual.VisualizationView;
 import visual.dynamic.described.Stage;
 import visual.statik.sampled.ContentFactory;
-import visual.statik.sampled.ImageFactory;
 import gui.*;
 import io.ResourceFinder;
 import resources.Marker;
 
-import java.awt.Point;
 import visual.statik.sampled.TransformableContent;
 
 public class Viewer extends JApplication
@@ -38,37 +36,35 @@ public class Viewer extends JApplication
 	@Override
 	public void init() {
 		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
-      ContentFactory tcFactory = new ContentFactory(finder);
-      int stageWidth = 640;
-      int stageHeight = 480;
-      Stage stage = new Stage(50);
-      VisualizationView stageView = stage.getView();
-      Toolkit toolkit = stageView.getToolkit();
-      ImageFactory imageFactory = new ImageFactory(finder);
-      Image cursor = imageFactory.createBufferedImage("blankcursor.png", 4);
-      TransformableContent content = tcFactory.createContent("roof.png", 3, false);
-      stage.add(content);
-      stageView.setBounds(0, 0, stageWidth, stageHeight);
-      stageView.setCursor(toolkit.createCustomCursor(cursor, new Point(0, 0), "Blank"));
-      content = tcFactory.createContent("cupola.png", 4, false);
-      Cupola cupola = new Cupola(content, (double)stageWidth, (double)stageHeight);
-      stage.add(cupola);
-      stage.addMouseMotionListener(cupola);
+		ContentFactory tcFactory = new ContentFactory(finder);
+		int stageWidth = 800;
+		int stageHeight = 450;
+		Stage stage = new Stage(50);
+		VisualizationView stageView = stage.getView();
+		// Toolkit toolkit = stageView.getToolkit();
+		// ImageFactory imageFactory = new ImageFactory(finder);
+		// TransformableContent content = tcFactory.createContent("roof.png", 3, false);
+		// stage.add(content);
+		stageView.setBounds(0, 0, stageWidth, stageHeight);
+    //   content = tcFactory.createContent("cupola.png", 4, false);
+    //   Cupola cupola = new Cupola(content, (double)stageWidth, (double)stageHeight);
+    //   stage.add(cupola);
+    //   stage.addMouseMotionListener(cupola);
 
-      for(int i = 0; i < 4; ++i) {
-         TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
-         TransformableContent purpleContent = tcFactory.createContent("balloon-purple.png", 4, false);
-         Balloon gold = new Balloon(goldContent, (double)stageWidth, (double)stageHeight);
-         gold.addAntagonist(cupola);
-         stage.add(gold);
-         Balloon purple = new Balloon(purpleContent, (double)stageWidth, (double)stageHeight);
-         purple.addAntagonist(cupola);
-         stage.add(purple);
-      }
+      	for(int i = 0; i < 4; ++i) {
+        	TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
+        	TransformableContent purpleContent = tcFactory.createContent("bern.png", 4, false);
+			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight);
+			// gold.addAntagonist(cupola);
+			stage.add(gold);
+			Enemy purple = new Enemy(purpleContent, (double)stageWidth, (double)stageHeight);
+			// purple.addAntagonist(cupola);
+			stage.add(purple);
+		}
 
-      JPanel contentPane = (JPanel)this.getContentPane();
-      contentPane.add(stageView);
-      stage.start();
+		JPanel contentPane = (JPanel)this.getContentPane();
+		contentPane.add(stageView);
+		stage.start();
 		
 	}
 
