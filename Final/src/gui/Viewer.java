@@ -53,13 +53,13 @@ public class Viewer extends JApplication
 
       	for(int i = 0; i < 4; ++i) {
         	TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
-        	TransformableContent purpleContent = tcFactory.createContent("bern.png", 4, false);
 			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight);
-			// gold.addAntagonist(cupola);
+			gold.addAntagonist(player);
 			stage.add(gold);
-			Enemy purple = new Enemy(purpleContent, (double)stageWidth, (double)stageHeight);
+        	// TransformableContent purpleContent = tcFactory.createContent("bern.png", 4, false);
+			// Enemy purple = new Enemy(purpleContent, (double)stageWidth, (double)stageHeight);
 			// purple.addAntagonist(cupola);
-			stage.add(purple);
+			// stage.add(purple);
 		}
 
 		JPanel contentPane = (JPanel)this.getContentPane();

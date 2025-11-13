@@ -4,6 +4,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Random;
 
 import visual.dynamic.described.RuleBasedSprite;
+import visual.dynamic.described.Sprite;
 import visual.statik.TransformableContent;
 
 public class Enemy extends RuleBasedSprite {
@@ -12,6 +13,7 @@ public class Enemy extends RuleBasedSprite {
    private double speed;
    private int stageWidth;
    private int stageHeight;
+   private int hitCount;  //hits 4 times at first for some reason
    private static final Random rng = new Random();
    
    private static final int[] TRACKS = {50, 200, 350}; // all 3 tracks
@@ -35,6 +37,20 @@ public class Enemy extends RuleBasedSprite {
    @Override
    public void handleTick(int time) {
       x -= speed;
+      Sprite player = null;
+
+
+      if (this.antagonists.size() > 0) {
+         player = (Sprite)this.antagonists.get(0);
+      }
+
+      if (player != null && this.intersects(player)) {
+         hitCount++;
+         if (hitCount > 4) {
+            System.out.println("hit" + hitCount);
+         }
+      }
+
 
       if (x < -50) {
             Rectangle2D bounds = getContent().getBounds2D(false);
