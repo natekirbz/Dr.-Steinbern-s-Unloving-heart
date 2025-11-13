@@ -46,10 +46,10 @@ public class Viewer extends JApplication
 		// TransformableContent content = tcFactory.createContent("roof.png", 3, false);
 		// stage.add(content);
 		stageView.setBounds(0, 0, stageWidth, stageHeight);
-    //   content = tcFactory.createContent("cupola.png", 4, false);
-    //   Cupola cupola = new Cupola(content, (double)stageWidth, (double)stageHeight);
-    //   stage.add(cupola);
-    //   stage.addMouseMotionListener(cupola);
+		TransformableContent content = tcFactory.createContent("cupola.png", 4, false);
+		Player player = new Player(content, (double)stageWidth, (double)stageHeight);
+		stage.add(player);
+		stage.addKeyListener(player);
 
       	for(int i = 0; i < 4; ++i) {
         	TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
