@@ -18,7 +18,7 @@ public class Enemy extends RuleBasedSprite {
    private HealthBar healthBar; // reference to the player's health
 
    
-   private static final int[] TRACKS = {50, 200, 350}; // all 3 tracks
+   private static final int[] TRACKS = {100, 225, 350}; // all 3 tracks
 
    public Enemy(TransformableContent content, double stageWidth, double stageHeight, HealthBar hb) {
       super(content);

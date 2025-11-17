@@ -22,10 +22,10 @@ public class Viewer extends JApplication
 	}
 	
 	public static void main(final String[] args) throws IOException
-	  {
-	    JApplication app = new Viewer(args);
-	    invokeInEventDispatchThread(app);
-	  }
+	{
+		JApplication app = new Viewer(args);
+		invokeInEventDispatchThread(app);
+	}
 
 	@Override
 	public void init() {

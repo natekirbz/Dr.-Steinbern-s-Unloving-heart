@@ -1,8 +1,13 @@
 package gui;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+
 import io.ResourceFinder;
 import visual.dynamic.described.Stage;
+import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
+import visual.statik.sampled.ImageFactory;
 import visual.statik.sampled.TransformableContent;
 import visual.VisualizationView;
 
@@ -38,12 +43,28 @@ public class Tracks extends Stage{
         for(int i = 0; i < 2; ++i) {
 
             // create 2 enemies 
-        	TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
-			goldContent.setScale(0.1, 0.1);
+        	TransformableContent goldContent = tcFactory.createContent("bernstein.jpg", 4, false);
 			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight, healthBar);
+			gold.setScale(0.25);
 			gold.addAntagonist(player);
 			add(gold);
 		}
 
+		ImageFactory imageFactory = new ImageFactory(finder);
+		Content[] contents = new Content[3];
+		BufferedImage[] images = imageFactory.createBufferedImages("heart.png", 3, 4);
+
+		contents = new Content[3];
+
+		for(int j = 0; j < contents.length; ++j) {
+			contents[j] = tcFactory.createContent(images[j], false);
+		}
+
+		Boss heart = new Boss(contents, 40, 40);
+		heart.setScale(0.25);
+		heart.setLocation(stageWidth -90, 0);
+		add(heart);
+
+		setBackground(Color.gray);
     }
 }
