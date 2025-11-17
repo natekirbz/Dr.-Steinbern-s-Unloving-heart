@@ -54,7 +54,7 @@ public class Enemy extends RuleBasedSprite {
       if (player != null && this.intersects(player)) {
          hitCount++;
          if (hitCount > 4) {
-            System.out.println("hit" + hitCount);
+            System.out.println("hit" + hitCount + " " + this.imageIndex);
             healthBar.shrink(2);
          }
       }
@@ -63,7 +63,7 @@ public class Enemy extends RuleBasedSprite {
             Rectangle2D bounds = getContent().getBounds2D(false);
             x = stageWidth + bounds.getWidth();
             y = TRACKS[rng.nextInt(TRACKS.length)];
-            speed += 7;
+            speed += 4;
             // pick a different image index each time we wrap
             if (this.contents != null && this.contents.length > 1) {
                int next = this.imageIndex;
