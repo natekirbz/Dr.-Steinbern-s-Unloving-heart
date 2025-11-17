@@ -76,9 +76,11 @@ public class Tracks extends Stage{
 		add(heart);
 
 		setBackground(Color.gray);
+
+		
     }
 
-    public boolean isPlayerAlive() {
-        return healthBar.getAlive();
-    }
+	public boolean isAlive(){
+		return this.healthBar.getAlive();
+	}
 }

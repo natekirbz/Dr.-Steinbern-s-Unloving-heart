@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import app.JApplication;
 import io.ResourceFinder;
@@ -137,10 +138,34 @@ public class Viewer extends JApplication implements ActionListener {
         }
 	}
 
+	public void lostScreen() {
+		stage.stop();
+		JPanel cp = resetContentPane();
+		cp.setLayout(null);
+
+		// Create a new Stage for the losing animation
+		Stage loseStage = new Stage(20);
+		VisualizationView view = loseStage.getView();
+		view.setBounds(0, 0, WIDTH, HEIGHT);
+
+		// Add the view to your window
+		cp.add(view);
+
+		// Load image
+		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+		ContentFactory factory = new ContentFactory(finder);
+		Content content = factory.createContent("bernstein2.jpg");
+
+		// Add the content to the stage
+		loseStage.add(content);
+
+		loseStage.start();
+	}
+
 	public void viewCharacter(String characterName) {
 		try {
 			BufferedImage myPicture = ImageIO.read(
-            getClass().getResourceAsStream("/resources/" + characterName));
+					getClass().getResourceAsStream("/resources/" + characterName));
 			myPicture.getScaledInstance(350, 300, 0);
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 			picLabel.setBounds(420, 50, 300, 300);
@@ -197,5 +222,18 @@ public class Viewer extends JApplication implements ActionListener {
 	@Override
 	public void init() {
 		startWindow();
+
+		startHealthMonitor();
+	}
+
+	public void startHealthMonitor() {
+		Timer timer = new Timer(50, e -> { // check every 50 ms
+			if (!((Tracks) stage).isAlive()) {
+				((Timer) e.getSource()).stop(); // stop checking
+				lostScreen(); // show losing screen
+			}
+		});
+
+		timer.start();
 	}
 }
