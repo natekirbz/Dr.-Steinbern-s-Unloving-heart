@@ -1,11 +1,16 @@
 package gui;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -50,6 +55,7 @@ public class Viewer extends JApplication implements ActionListener {
 
 	public static void main(final String[] args) throws IOException {
 		JApplication app = new Viewer(args);
+		playAudio("demo-music.wav");
 		invokeInEventDispatchThread(app);
 	}
 
@@ -255,5 +261,17 @@ public class Viewer extends JApplication implements ActionListener {
 		});
 
 		timer.start();
+	}
+
+	public static void playAudio(String audioFile) {
+		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+		InputStream raw = finder.findInputStream(audioFile);
+		try (BufferedInputStream buf = new BufferedInputStream(raw); AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
+			Clip clip = AudioSystem.getClip();
+			clip.open(audio);
+			clip.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
