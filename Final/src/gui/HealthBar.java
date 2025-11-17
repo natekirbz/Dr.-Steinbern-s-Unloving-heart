@@ -44,13 +44,14 @@ public class HealthBar extends RuleBasedSprite {
     // Shrink from the right by using scale
     public void shrink(double amount) {
         currentWidth -= amount;
-        if (currentWidth < 0) {
-            currentWidth = 0;
-            System.out.println("dead");
-        }
+        System.out.println(getAlive());
         // Update the bar's shape
         Content bar = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, Color.RED, new BasicStroke());
         aggregateContent.add(bar);
+    }
+
+    public boolean getAlive() {
+        return currentWidth >= 0;
     }
 
     @Override

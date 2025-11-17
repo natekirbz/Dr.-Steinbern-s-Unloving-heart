@@ -76,6 +76,7 @@ public class Enemy extends RuleBasedSprite {
       setLocation(x, y);
    }
 
+
    @Override
    public TransformableContent getContent() {
       if (this.contents != null && this.contents.length > 0) {
