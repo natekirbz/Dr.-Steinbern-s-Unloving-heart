@@ -11,12 +11,14 @@ import resources.Marker;
 
 public class Tracks extends Stage{
 
+	private HealthBar healthBar;
+
     public Tracks() {
         super(50);
 		int stageWidth = 800;
 		int stageHeight = 450;
 
-        //build visView
+        // build visView
         VisualizationView stageView = getView();
         stageView.setBounds(0, 0, stageWidth, stageHeight);
 
@@ -28,23 +30,20 @@ public class Tracks extends Stage{
 		Player player = new Player(content, (double)stageWidth, (double)stageHeight);
 		add(player);
 		addKeyListener(player);
-        
+
+		healthBar = new HealthBar(150, 20, HealthBar.createAggregateContent()); 
+		healthBar.setLocation(20, 20); // top-left of screen
+		add(healthBar);
+          
         for(int i = 0; i < 2; ++i) {
 
             // create 2 enemies 
         	TransformableContent goldContent = tcFactory.createContent("balloon-gold.png", 4, false);
 			goldContent.setScale(0.1, 0.1);
-			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight);
+			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight, healthBar);
 			gold.addAntagonist(player);
 			add(gold);
-            
-        	// TransformableContent purpleContent = tcFactory.createContent("bern.png", 4, false);
-			// Enemy purple = new Enemy(purpleContent, (double)stageWidth, (double)stageHeight);
-			// purple.addAntagonist(cupola);
-			// stage.add(purple);
 		}
 
     }
-    
-
 }

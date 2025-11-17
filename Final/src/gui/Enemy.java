@@ -15,15 +15,19 @@ public class Enemy extends RuleBasedSprite {
    private int stageHeight;
    private int hitCount;  //hits 4 times at first for some reason
    private static final Random rng = new Random();
+   private HealthBar healthBar; // reference to the player's health
+
    
    private static final int[] TRACKS = {50, 200, 350}; // all 3 tracks
 
-   public Enemy(TransformableContent content, double stageWidth, double stageHeight) {
+   public Enemy(TransformableContent content, double stageWidth, double stageHeight, HealthBar hb) {
       super(content);
 
       Rectangle2D bounds = content.getBounds2D(false);
       this.stageWidth = (int) stageWidth;
       this.stageHeight = (int) stageHeight;
+      this.healthBar = hb;
+
 
       //choose a track
       this.y = TRACKS[rng.nextInt(TRACKS.length)];
@@ -39,7 +43,6 @@ public class Enemy extends RuleBasedSprite {
       x -= speed;
       Sprite player = null;
 
-
       if (this.antagonists.size() > 0) {
          player = (Sprite)this.antagonists.get(0);
       }
@@ -48,6 +51,8 @@ public class Enemy extends RuleBasedSprite {
          hitCount++;
          if (hitCount > 4) {
             System.out.println("hit" + hitCount);
+            healthBar.shrink(2);
+
          }
       }
 
