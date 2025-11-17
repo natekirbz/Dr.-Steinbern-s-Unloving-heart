@@ -19,15 +19,19 @@ public class Enemy extends RuleBasedSprite {
 
    
    private static final int[] TRACKS = {100, 225, 350}; // all 3 tracks
+   
+   private TransformableContent[] contents;
+   private int imageIndex;
+   public Enemy(TransformableContent[] contents, int initialIndex, double stageWidth, double stageHeight, HealthBar hb) {
+      super(contents[initialIndex]);
 
-   public Enemy(TransformableContent content, double stageWidth, double stageHeight, HealthBar hb) {
-      super(content);
+      this.contents = contents;
+      this.imageIndex = initialIndex;
 
-      Rectangle2D bounds = content.getBounds2D(false);
+      Rectangle2D bounds = contents[initialIndex].getBounds2D(false);
       this.stageWidth = (int) stageWidth;
       this.stageHeight = (int) stageHeight;
       this.healthBar = hb;
-
 
       //choose a track
       this.y = TRACKS[rng.nextInt(TRACKS.length)];
@@ -52,17 +56,31 @@ public class Enemy extends RuleBasedSprite {
          if (hitCount > 4) {
             System.out.println("hit" + hitCount);
             healthBar.shrink(2);
-
          }
       }
-
 
       if (x < -50) {
             Rectangle2D bounds = getContent().getBounds2D(false);
             x = stageWidth + bounds.getWidth();
             y = TRACKS[rng.nextInt(TRACKS.length)];
-            speed = 7;
+            speed += 7;
+            // pick a different image index each time we wrap
+            if (this.contents != null && this.contents.length > 1) {
+               int next = this.imageIndex;
+               while (next == this.imageIndex) {
+                  next = rng.nextInt(this.contents.length);
+               }
+               this.imageIndex = next;
+            }
       }
       setLocation(x, y);
+   }
+
+   @Override
+   public TransformableContent getContent() {
+      if (this.contents != null && this.contents.length > 0) {
+         return this.contents[this.imageIndex];
+      }
+      return super.getContent();
    }
 }

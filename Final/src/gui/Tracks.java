@@ -40,12 +40,22 @@ public class Tracks extends Stage{
 		healthBar.setLocation(20, 20); // top-left of screen
 		add(healthBar);
           
-        for(int i = 0; i < 2; ++i) {
+		for(int i = 0; i < 2; ++i) {
 
-            // create 2 enemies 
-        	TransformableContent goldContent = tcFactory.createContent("bernstein.jpg", 4, false);
-			Enemy gold = new Enemy(goldContent, (double)stageWidth, (double)stageHeight, healthBar);
-			gold.setScale(0.25);
+			// create array of bernstein images and pick an initial one
+			TransformableContent[] enemyContents = new TransformableContent[8];
+			for (int j = 0; j < enemyContents.length; ++j) {
+				enemyContents[j] = tcFactory.createContent("bernstein" + j + ".jpg", 4, false);
+			}
+
+			int initialIndex = (int)(Math.random() * enemyContents.length);
+			Enemy gold = new Enemy(enemyContents, initialIndex, (double)stageWidth, (double)stageHeight, healthBar);
+			if (initialIndex == 7) {
+				gold.setScale(0.25);
+			} else {
+				gold.setScale(0.1);
+			}
+
 			gold.addAntagonist(player);
 			add(gold);
 		}
