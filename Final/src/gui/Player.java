@@ -8,7 +8,7 @@ import visual.statik.TransformableContent;
 public class Player extends RuleBasedSprite implements KeyListener{
     private double left;
     private double top;
-    private static final int[] TRACKS = {0, 150, 300}; // all 3 tracks
+    private static final int[] TRACKS = {100, 225, 350}; // all 3 tracks
     private int current;
 
     public Player(TransformableContent content, double stageWidth, double stageHeight) {
