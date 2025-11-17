@@ -2,6 +2,8 @@ package gui;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -121,6 +123,18 @@ public class Viewer extends JApplication implements ActionListener {
 		VisualizationView view = stage.getView();
 		cp.add(view);
 		stage.start();
+		try {
+            // Get the InetAddress object for the local host
+            InetAddress localHost = InetAddress.getLocalHost();
+
+            // Get the IP address as a String
+            String ipAddress = localHost.getHostAddress();
+
+            System.out.println("Local IP Address: " + ipAddress);
+
+        } catch (UnknownHostException e) {
+            System.err.println("Could not find local host IP address: " + e.getMessage());
+        }
 	}
 
 	public void viewCharacter(String characterName) {
