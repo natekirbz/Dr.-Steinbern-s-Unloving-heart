@@ -59,4 +59,7 @@ public class Player extends RuleBasedSprite implements KeyListener{
     public void keyTyped(KeyEvent e) {
         // do nothing
     }
+
+    public void setCharacter(String character){
+    }
 }

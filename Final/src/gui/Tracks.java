@@ -18,7 +18,7 @@ public class Tracks extends Stage{
 
 	private HealthBar healthBar;
 
-    public Tracks() {
+    public Tracks(String playerName) {
         super(50);
 		int stageWidth = 800;
 		int stageHeight = 450;
@@ -30,7 +30,7 @@ public class Tracks extends Stage{
         // resource finder to create player
         ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
 		ContentFactory tcFactory = new ContentFactory(finder);
-		TransformableContent content = tcFactory.createContent("shark.png", 4, false);
+		TransformableContent content = tcFactory.createContent(playerName, 4, false);
 
 		Player player = new Player(content, (double)stageWidth, (double)stageHeight);
 		add(player);
