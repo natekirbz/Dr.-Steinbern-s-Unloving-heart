@@ -124,18 +124,6 @@ public class Viewer extends JApplication implements ActionListener {
 		VisualizationView view = stage.getView();
 		cp.add(view);
 		stage.start();
-		try {
-            // Get the InetAddress object for the local host
-            InetAddress localHost = InetAddress.getLocalHost();
-
-            // Get the IP address as a String
-            String ipAddress = localHost.getHostAddress();
-
-            System.out.println("Local IP Address: " + ipAddress);
-
-        } catch (UnknownHostException e) {
-            System.err.println("Could not find local host IP address: " + e.getMessage());
-        }
 	}
 
 	public void lostScreen() {
@@ -147,6 +135,20 @@ public class Viewer extends JApplication implements ActionListener {
 		Stage loseStage = new Stage(20);
 		VisualizationView view = loseStage.getView();
 		view.setBounds(0, 0, WIDTH, HEIGHT);
+		try {
+			// Get the InetAddress object for the local host
+            InetAddress localHost = InetAddress.getLocalHost();
+			
+            // Get the IP address as a String
+            String ipAddress = localHost.getHostAddress();
+			
+            System.out.println("Local IP Address: " + ipAddress);
+			JLabel gameOver = new JLabel("Game over " + ipAddress);
+			cp.add(gameOver);
+
+        } catch (UnknownHostException e) {
+            System.err.println("Could not find local host IP address: " + e.getMessage());
+        }
 
 		// Add the view to your window
 		cp.add(view);
