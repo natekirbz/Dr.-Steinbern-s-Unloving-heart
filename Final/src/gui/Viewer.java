@@ -1,40 +1,139 @@
 package gui;
 
 import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import app.JApplication;
- 
 import visual.VisualizationView;
 import visual.dynamic.described.Stage;
 
-public class Viewer extends JApplication
-{
-	public static final int HEIGHT = 450; //divisible by 3 150px tracks
-	public static final int WIDTH = 800;
-	public Stage stage;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-	public Viewer(final String[] args) {
-		super(WIDTH, HEIGHT);
-		
-		this.stage = new Tracks();
+public class Viewer extends JApplication implements ActionListener {
 
-	}
-	
-	public static void main(final String[] args) throws IOException
-	  {
-	    JApplication app = new Viewer(args);
-	    invokeInEventDispatchThread(app);
-	  }
+    public static final int HEIGHT = 450; 
+    public static final int WIDTH = 800;
 
-	@Override
-	public void init() {
-		VisualizationView view = stage.getView();
-    	JPanel cp = (JPanel) getContentPane();
-    	cp.add(view);
+    public Stage stage;
 
-    	stage.start();
-	}
+    // Commands
+    protected static final String START = "Start";
+    protected static final String CHARACTER = "Character";
 
+    // Fonts
+    private final Font titleFont = new Font("Arial", Font.BOLD | Font.ITALIC, 50);
+    private final Font buttonFont = new Font("Arial", Font.BOLD | Font.ITALIC, 30);
 
+    public Viewer(final String[] args) {
+        super(WIDTH, HEIGHT);
+        this.stage = new Tracks();
+    }
+
+    public static void main(final String[] args) throws IOException {
+        JApplication app = new Viewer(args);
+        invokeInEventDispatchThread(app);
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent evt) {
+        String action = evt.getActionCommand();
+
+        switch (action) {
+            case START:
+                handleStart();
+                break;
+
+            case CHARACTER:
+                handleCharacter();
+                break;
+
+            case "Wife":
+            case "Sheep":
+            case "Llama":
+                // For now we simply print; user can add logic later
+                System.out.println("Character selected: " + action);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // --------------------------------------------------------
+    //  Main Start Button Window
+    // --------------------------------------------------------
+    public void startWindow() {
+        JPanel contentPane = resetContentPane();
+        contentPane.setLayout(null);
+
+        JLabel title = new JLabel("Dr. Steinbern's Unloving Heart");
+        title.setFont(titleFont);
+        title.setBounds(50, 50, 1500, 200);
+        contentPane.add(title);
+
+        // Start Button
+        JButton startBtn = createButton(START, 90, 300, 300, 100, titleFont);
+        contentPane.add(startBtn);
+
+        // Character Select Button
+        JButton characterBtn = createButton(CHARACTER, 400, 300, 300, 100, titleFont);
+        contentPane.add(characterBtn);
+    }
+
+    // --------------------------------------------------------
+    //  Start → Show the Stage
+    // --------------------------------------------------------
+    public void handleStart() {
+        JPanel cp = resetContentPane();
+        VisualizationView view = stage.getView();
+        cp.add(view);
+        stage.start();
+    }
+
+    // --------------------------------------------------------
+    //  Character Selection Screen
+    // --------------------------------------------------------
+    public void handleCharacter() {
+        JPanel contentPane = resetContentPane();
+        contentPane.setLayout(null);
+
+        JLabel label = new JLabel("Choose your character");
+        label.setFont(buttonFont);
+        label.setBounds(50, 50, 800, 100);
+        contentPane.add(label);
+
+        // Character buttons
+        contentPane.add(createButton("Wife", 20, 300, 150, 60, buttonFont));
+        contentPane.add(createButton("Sheep", 200, 300, 150, 60, buttonFont));
+        contentPane.add(createButton("Llama", 380, 300, 150, 60, buttonFont));
+    }
+
+    // --------------------------------------------------------
+    //  Utility Methods
+    // --------------------------------------------------------
+    private JPanel resetContentPane() {
+        JPanel cp = (JPanel) getContentPane();
+        cp.removeAll();
+        cp.revalidate();
+        cp.repaint();
+        return cp;
+    }
+
+    private JButton createButton(String text, int x, int y, int w, int h, Font font) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, w, h);
+        btn.setFont(font);
+        btn.addActionListener(this);
+        return btn;
+    }
+
+    @Override
+    public void init() {
+        startWindow();
+    }
 }
