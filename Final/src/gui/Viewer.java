@@ -20,6 +20,7 @@ import visual.dynamic.described.Stage;
 import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -127,41 +128,58 @@ public class Viewer extends JApplication implements ActionListener {
 	}
 
 	public void lostScreen() {
+		// Stop the running stage
 		stage.stop();
+
+		// Clear window
 		JPanel cp = resetContentPane();
 		cp.setLayout(null);
 
-		// Create a new Stage for the losing animation
+		// --------------------
+		// PRINT GAME OVER + IP
+		// --------------------
+		try {
+			InetAddress localHost = InetAddress.getLocalHost();
+			String ipAddress = localHost.getHostAddress();
+
+			JLabel gameOver = new JLabel("Game Over - " + ipAddress);
+			gameOver.setFont(new Font("Arial", Font.BOLD, 30));
+			gameOver.setForeground(Color.WHITE);
+			gameOver.setBounds(200, 20, 500, 50);
+			cp.add(gameOver);
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+		// --------------------
+		// NEW STAGE FOR ANIMATION
+		// --------------------
 		Stage loseStage = new Stage(20);
 		VisualizationView view = loseStage.getView();
 		view.setBounds(0, 0, WIDTH, HEIGHT);
-		try {
-			// Get the InetAddress object for the local host
-            InetAddress localHost = InetAddress.getLocalHost();
-			
-            // Get the IP address as a String
-            String ipAddress = localHost.getHostAddress();
-			
-            System.out.println("Local IP Address: " + ipAddress);
-			JLabel gameOver = new JLabel("Game over " + ipAddress);
-			cp.add(gameOver);
 
-        } catch (UnknownHostException e) {
-            System.err.println("Could not find local host IP address: " + e.getMessage());
-        }
-
-		// Add the view to your window
+		// Add the stage view *after* the label so the label stays on top
 		cp.add(view);
 
-		// Load image
+		// --------------------
+		// LOAD IMAGE
+		// --------------------
 		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
 		ContentFactory factory = new ContentFactory(finder);
 		Content content = factory.createContent("bernstein2.jpg");
 
-		// Add the content to the stage
+		// Add content to stage
 		loseStage.add(content);
 
+		// --------------------
+		// START ANIMATION
+		// --------------------
 		loseStage.start();
+
+		// Refresh UI
+		cp.revalidate();
+		cp.repaint();
 	}
 
 	public void viewCharacter(String characterName) {
