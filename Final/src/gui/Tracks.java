@@ -76,5 +76,11 @@ public class Tracks extends Stage{
 		add(heart);
 
 		setBackground(Color.gray);
+
+		
     }
+
+	public HealthBar getHealthbar(){
+		return this.healthBar;
+	}
 }
