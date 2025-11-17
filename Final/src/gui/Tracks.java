@@ -80,7 +80,7 @@ public class Tracks extends Stage{
 		
     }
 
-	public HealthBar getHealthbar(){
-		return this.healthBar;
+	public boolean isAlive(){
+		return this.healthBar.getAlive();
 	}
 }

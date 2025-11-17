@@ -213,10 +213,8 @@ public class Viewer extends JApplication implements ActionListener {
 	}
 
 	public void startHealthMonitor() {
-		HealthBar hb = ((Tracks) stage).getHealthbar();
-
 		Timer timer = new Timer(50, e -> { // check every 50 ms
-			if (!hb.getAlive()) {
+			if (!((Tracks) stage).isAlive()) {
 				((Timer) e.getSource()).stop(); // stop checking
 				lostScreen(); // show losing screen
 			}
