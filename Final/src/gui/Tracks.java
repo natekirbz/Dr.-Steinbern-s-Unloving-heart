@@ -77,4 +77,8 @@ public class Tracks extends Stage{
 
 		setBackground(Color.gray);
     }
+
+    public boolean isPlayerAlive() {
+        return healthBar.getAlive();
+    }
 }
