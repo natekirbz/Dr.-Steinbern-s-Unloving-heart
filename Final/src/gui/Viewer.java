@@ -41,7 +41,7 @@ public class Viewer extends JApplication implements ActionListener {
 
 	public Viewer(final String[] args) {
 		super(WIDTH, HEIGHT);
-		this.stage = new Tracks("shark.png");
+		this.stage = new Tracks("dolphin.png");
 	}
 
 	public static void main(final String[] args) throws IOException {
@@ -75,7 +75,7 @@ public class Viewer extends JApplication implements ActionListener {
 				handleCharacter();
 				viewCharacter(character);
 				break;
-				
+
 			case "Llama":
 				character = "llama.png";
 				this.stage = new Tracks(character);
@@ -158,7 +158,7 @@ public class Viewer extends JApplication implements ActionListener {
 		contentPane.add(createButton("Dolphin", 20, 300, 150, 60, buttonFont));
 		contentPane.add(createButton("Sheep", 200, 300, 150, 60, buttonFont));
 		contentPane.add(createButton("Llama", 380, 300, 150, 60, buttonFont));
-		contentPane.add(createButton("Save", 10, 10, 95, 60, buttonFont));
+		contentPane.add(createButton("Save", 10, 10, 105, 60, buttonFont));
 	}
 
 	// --------------------------------------------------------
