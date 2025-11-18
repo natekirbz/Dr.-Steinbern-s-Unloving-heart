@@ -186,7 +186,7 @@ public class Viewer extends JApplication implements ActionListener {
 		try {
 			BufferedImage myPicture = ImageIO.read(
 					getClass().getResourceAsStream("/resources/" + characterName));
-			myPicture.getScaledInstance(350, 300, 0);
+			myPicture.getScaledInstance(10, 10, 0);
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 			picLabel.setBounds(420, 50, 300, 300);
 
