@@ -43,18 +43,14 @@ public class Tracks extends Stage{
 		for(int i = 0; i < 2; ++i) {
 
 			// create array of bernstein images and pick an initial one
-			TransformableContent[] enemyContents = new TransformableContent[8];
+			TransformableContent[] enemyContents = new TransformableContent[7];
 			for (int j = 0; j < enemyContents.length; ++j) {
 				enemyContents[j] = tcFactory.createContent("bernstein" + j + ".jpg", 4, false);
 			}
 
 			int initialIndex = (int)(Math.random() * enemyContents.length);
 			Enemy gold = new Enemy(enemyContents, initialIndex, (double)stageWidth, (double)stageHeight, healthBar);
-			if (initialIndex == 7) { // giant unbeatable bernstein is a 1-8 intentional feature
-				gold.setScale(0.25);
-			} else {
-				gold.setScale(0.1);
-			}
+			gold.setScale(0.1);
 
 			gold.addAntagonist(player);
 			add(gold);
@@ -70,7 +66,7 @@ public class Tracks extends Stage{
 			contents[j] = tcFactory.createContent(images[j], false);
 		}
 
-		Boss heart = new Boss(contents, 40, 40);
+		Boss heart = new Boss(contents, 40, 40, 10);
 		heart.setScale(0.25);
 		heart.setLocation(stageWidth -90, 0);
 		add(heart);

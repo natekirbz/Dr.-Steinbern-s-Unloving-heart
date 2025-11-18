@@ -63,7 +63,7 @@ public class Enemy extends RuleBasedSprite {
             Rectangle2D bounds = getContent().getBounds2D(false);
             x = stageWidth + bounds.getWidth();
             y = TRACKS[rng.nextInt(TRACKS.length)];
-            speed += 4;
+            speed += (int)(Math.random() * 7);
             // pick a different image index each time we wrap
             if (this.contents != null && this.contents.length > 1) {
                int next = this.imageIndex;

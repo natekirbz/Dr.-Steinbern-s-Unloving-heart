@@ -20,8 +20,9 @@ public class Boss extends RuleBasedSprite{
     protected int timeInState;
     protected TransformableContent[] contents;
     private static final Random rng = new Random();
+    private int health;
 
-    public Boss(TransformableContent[] contents, double width, double height) {
+    public Boss(TransformableContent[] contents, double width, double height, int health) {
         super(contents[0]);
         this.contents = contents;
         this.maxX = width;
@@ -32,11 +33,18 @@ public class Boss extends RuleBasedSprite{
         this.lastTime = 0;
         this.timeInState = 0;
         this.stateChange = 1;
+        this.health = health;
     }
 
-   public TransformableContent getContent() {
+    public TransformableContent getContent() {
       return this.contents[this.state];
-   }
+    }
+
+    public void damage() {
+        this.health--;
+        
+    }
+
 
     @Override
     public void handleTick(int time) {
