@@ -1,10 +1,12 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import io.ResourceFinder;
 import visual.dynamic.described.Stage;
+import visual.statik.described.AggregateContent;
 import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
 import visual.statik.sampled.ImageFactory;
@@ -17,6 +19,7 @@ import resources.Marker;
 public class Tracks extends Stage{
 
 	private HealthBar healthBar;
+	private HealthBar bossBar;
 
     public Tracks(String playerName) {
         super(50);
@@ -39,22 +42,36 @@ public class Tracks extends Stage{
 		healthBar = new HealthBar(150, 20, HealthBar.createAggregateContent()); 
 		healthBar.setLocation(20, 20); // top-left of screen
 		add(healthBar);
+
+		Color black = Color.BLACK;
+        Color red = Color.red;
+        BasicStroke stroke = new BasicStroke();
+        AggregateContent ac = new AggregateContent();
+		
+		bossBar = new HealthBar(100, 20, ac); 
+		bossBar.setLocation(600, 50); // top-right of screen
+		bossBar.setRotation(3.14159/2);
+		add(bossBar);
           
 		for(int i = 0; i < 2; ++i) {
-
 			// create array of bernstein images and pick an initial one
 			TransformableContent[] enemyContents = new TransformableContent[7];
 			for (int j = 0; j < enemyContents.length; ++j) {
 				enemyContents[j] = tcFactory.createContent("bernstein" + j + ".jpg", 4, false);
-			}
+			} 
 
 			int initialIndex = (int)(Math.random() * enemyContents.length);
 			Enemy gold = new Enemy(enemyContents, initialIndex, (double)stageWidth, (double)stageHeight, healthBar);
 			gold.setScale(0.1);
-
 			gold.addAntagonist(player);
 			add(gold);
 		}
+		// spawn a rare enemy occasionally
+			TransformableContent goldContent = tcFactory.createContent("monster.jpeg", 4, false);
+			Powerup energy = new Powerup(goldContent, (int)(Math.random() * 3), (double)stageWidth, (double)stageHeight, bossBar); //random enemy sprite implement later
+			energy.setScale(0.3);
+			energy.addAntagonist(player);
+			add(energy);
 
 		ImageFactory imageFactory = new ImageFactory(finder);
 		Content[] contents = new Content[3];
@@ -70,7 +87,7 @@ public class Tracks extends Stage{
 		heart.setScale(0.25);
 		heart.setLocation(stageWidth -90, 0);
 		add(heart);
-
+		
 		setBackground(Color.gray);
 
 		

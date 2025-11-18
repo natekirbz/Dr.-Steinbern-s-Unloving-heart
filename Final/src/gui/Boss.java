@@ -6,6 +6,14 @@ import java.util.Random;
 import visual.dynamic.described.RuleBasedSprite;
 import visual.dynamic.described.Sprite;
 import visual.statik.TransformableContent;
+import visual.statik.sampled.Content;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
+import java.awt.geom.Rectangle2D;
+import java.awt.RenderingHints;
 
 public class Boss extends RuleBasedSprite{
     protected double maxX;
@@ -21,6 +29,8 @@ public class Boss extends RuleBasedSprite{
     protected TransformableContent[] contents;
     private static final Random rng = new Random();
     private int health;
+    private float grayFactor = 1.0f; 
+
 
     public Boss(TransformableContent[] contents, double width, double height, int health) {
         super(contents[0]);
@@ -42,8 +52,18 @@ public class Boss extends RuleBasedSprite{
 
     public void damage() {
         this.health--;
+
+        // reduce saturation by 10% per hit
+        grayFactor -= 0.1f;
+        if (grayFactor < 0f) grayFactor = 0f;
+
+        applyGrayTransform();
+    }
+
+    private void applyGrayTransform() {
         
     }
+
 
 
     @Override
