@@ -1,11 +1,18 @@
 package gui;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +28,9 @@ import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -31,10 +40,11 @@ public class Viewer extends JApplication implements ActionListener {
 	public static final int HEIGHT = 450;
 	public static final int WIDTH = 800;
 
+	// Main stage for game
 	public Stage stage;
 
-	public Player player;
-
+	// Character selection buttons map
+	Map<String, JButton> characterBtns;
 	// Commands
 	protected static final String START = "Start";
 	protected static final String CHARACTER = "Character";
@@ -46,10 +56,12 @@ public class Viewer extends JApplication implements ActionListener {
 	public Viewer(final String[] args) {
 		super(WIDTH, HEIGHT);
 		this.stage = new Tracks("dolphin.png");
+		characterBtns = new HashMap<>();
 	}
 
 	public static void main(final String[] args) throws IOException {
 		JApplication app = new Viewer(args);
+		playAudio("demo-music.wav");
 		invokeInEventDispatchThread(app);
 	}
 
@@ -67,33 +79,57 @@ public class Viewer extends JApplication implements ActionListener {
 				break;
 
 			case "Dolphin":
-				character = "dolphin.png";
-				this.stage = new Tracks(character);
-				handleCharacter();
-				viewCharacter(character);
+				setCharacter(action);
 				break;
 
 			case "Sheep":
-				character = "sheep.png";
-				this.stage = new Tracks(character);
-				handleCharacter();
-				viewCharacter(character);
+				setCharacter(action);
 				break;
 
 			case "Llama":
-				character = "llama.png";
-				this.stage = new Tracks(character);
-				handleCharacter();
-				viewCharacter(character);
+				setCharacter(action);
 				break;
 
-			case "Save":
+			case "Confirm":
 				startWindow();
 				break;
 
 			default:
 				break;
 		}
+	}
+
+	private void setCharacter(String action) {
+		String character;
+		character = action + ".png";
+		// Change to dolphin track
+		this.stage = new Tracks(character);
+		handleCharacter();
+		// Get the button being replaced
+		JButton tempButton = characterBtns.get(action);
+		Rectangle r = tempButton.getBounds(); // correct way to get bounds
+
+		// Remove old button from UI
+		getContentPane().remove(tempButton);
+
+		// Create the confirm button
+		JButton newButton = createButton(
+				"Confirm",
+				r.x, r.y, r.width, r.height,
+				buttonFont);
+
+		// Put into map
+		characterBtns.put(action, newButton);
+
+		// Add new button TO SCREEN
+		getContentPane().add(newButton);
+
+		// Show the character image (AFTER button added)
+		viewCharacter(character);
+
+		// Refresh UI
+		getContentPane().revalidate();
+		getContentPane().repaint();
 	}
 
 	// --------------------------------------------------------
@@ -186,7 +222,7 @@ public class Viewer extends JApplication implements ActionListener {
 		try {
 			BufferedImage myPicture = ImageIO.read(
 					getClass().getResourceAsStream("/resources/" + characterName));
-			myPicture.getScaledInstance(350, 300, 0);
+			myPicture.getScaledInstance(10, 10, 0);
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 			picLabel.setBounds(420, 50, 300, 300);
 
@@ -214,10 +250,13 @@ public class Viewer extends JApplication implements ActionListener {
 		contentPane.add(label);
 
 		// Character buttons
-		contentPane.add(createButton("Dolphin", 20, 300, 150, 60, buttonFont));
-		contentPane.add(createButton("Sheep", 200, 300, 150, 60, buttonFont));
-		contentPane.add(createButton("Llama", 380, 300, 150, 60, buttonFont));
-		contentPane.add(createButton("Save", 10, 10, 105, 60, buttonFont));
+		characterBtns.put("Dolphin", createButton("Dolphin", 20, 300, 150, 60, buttonFont));
+		contentPane.add(characterBtns.get("Dolphin"));
+		characterBtns.put("Sheep", createButton("Sheep", 200, 300, 150, 60, buttonFont));
+		contentPane.add(characterBtns.get("Sheep"));
+		characterBtns.put("Llama", createButton("Llama", 380, 300, 150, 60, buttonFont));
+		contentPane.add(characterBtns.get("Llama"));
+
 	}
 
 	// --------------------------------------------------------
@@ -255,5 +294,18 @@ public class Viewer extends JApplication implements ActionListener {
 		});
 
 		timer.start();
+	}
+
+	public static void playAudio(String audioFile) {
+		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+		InputStream raw = finder.findInputStream(audioFile);
+		try (BufferedInputStream buf = new BufferedInputStream(raw);
+				AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
+			Clip clip = AudioSystem.getClip();
+			clip.open(audio);
+			clip.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
