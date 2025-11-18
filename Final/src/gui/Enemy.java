@@ -36,9 +36,7 @@ public class Enemy extends RuleBasedSprite {
       //choose a track
       this.y = TRACKS[rng.nextInt(TRACKS.length)];
       this.x = stageWidth + bounds.getWidth();
-
       this.speed = 5;
-
       this.setLocation(x, y);
    }
 
@@ -55,7 +53,7 @@ public class Enemy extends RuleBasedSprite {
          hitCount++;
          if (hitCount > 4) {
             System.out.println("hit" + hitCount + " " + this.imageIndex);
-            healthBar.shrink(2);
+            healthBar.shrink(4);
          }
       }
 
