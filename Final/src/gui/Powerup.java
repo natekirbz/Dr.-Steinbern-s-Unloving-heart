@@ -63,7 +63,7 @@ public class Powerup extends RuleBasedSprite {
         Rectangle2D bounds = getContent().getBounds2D(false);
          x = stageWidth + bounds.getWidth();
          y = TRACKS[rng.nextInt(TRACKS.length)];
-         speed += (int)(Math.random() * 3);
+         speed += (int)(Math.random() * 2);
       }
 
       if (x < -50) {
