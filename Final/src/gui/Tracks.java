@@ -93,7 +93,15 @@ public class Tracks extends Stage{
 		
     }
 
+	public void resetTracks(){
+		
+	}
+
 	public boolean isAlive(){
 		return this.healthBar.getAlive();
+	}
+
+	public boolean bossAlive(){
+		return this.bossBar.getAlive();
 	}
 }

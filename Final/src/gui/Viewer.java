@@ -16,6 +16,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -68,7 +69,6 @@ public class Viewer extends JApplication implements ActionListener {
 	@Override
 	public void actionPerformed(final ActionEvent evt) {
 		String action = evt.getActionCommand();
-		String character = "";
 		switch (action) {
 			case START:
 				handleStart();
@@ -92,6 +92,10 @@ public class Viewer extends JApplication implements ActionListener {
 
 			case "Confirm":
 				startWindow();
+				break;
+
+			case "Exit":
+				System.exit(0);
 				break;
 
 			default:
@@ -163,59 +167,67 @@ public class Viewer extends JApplication implements ActionListener {
 		stage.start();
 	}
 
-	public void lostScreen() {
-		// Stop the running stage
-		stage.stop();
+	public void endScreen(String imageName) {
+		if (stage != null)
+			stage.stop();
 
-		// Clear window
 		JPanel cp = resetContentPane();
 		cp.setLayout(null);
 
-		// --------------------
-		// PRINT GAME OVER + IP
-		// --------------------
+		// ---- Layered Pane ----
+		JLayeredPane layers = new JLayeredPane();
+		layers.setBounds(0, 0, WIDTH, HEIGHT);
+		cp.add(layers);
+
+		// -----------------------
+		// Game Over + IP
+		// -----------------------
+		JLabel gameOver = new JLabel();
 		try {
 			InetAddress localHost = InetAddress.getLocalHost();
 			String ipAddress = localHost.getHostAddress();
-
-			JLabel gameOver = new JLabel("Game Over - " + ipAddress);
-			gameOver.setFont(new Font("Arial", Font.BOLD, 30));
-			gameOver.setForeground(Color.WHITE);
-			gameOver.setBounds(200, 20, 500, 50);
-			cp.add(gameOver);
-
+			gameOver.setText("Game Over - " + ipAddress);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			gameOver.setText("Game Over");
 		}
 
-		// --------------------
-		// NEW STAGE FOR ANIMATION
-		// --------------------
+		gameOver.setFont(new Font("Arial", Font.BOLD, 30));
+		gameOver.setForeground(Color.WHITE);
+		gameOver.setBounds(200, 20, 600, 50);
+
+		// -----------------------
+		// Stage View
+		// -----------------------
 		Stage loseStage = new Stage(20);
 		VisualizationView view = loseStage.getView();
 		view.setBounds(0, 0, WIDTH, HEIGHT);
 
-		// Add the stage view *after* the label so the label stays on top
-		cp.add(view);
+		// -----------------------
+		// Buttons
+		// -----------------------
+		JButton startBtn = createButton("Start", 20, 300, 150, 60, buttonFont);
+		JButton exitBtn = createButton("Exit", 20, 350, 150, 60, buttonFont);
 
-		// --------------------
-		// LOAD IMAGE
-		// --------------------
+		startBtn.setBounds(20, 300, 150, 60);
+		exitBtn.setBounds(20, 350, 150, 60);
+
+		// -----------------------
+		// Add to layers
+		// -----------------------
+		layers.add(view, JLayeredPane.DEFAULT_LAYER);
+		layers.add(gameOver, JLayeredPane.PALETTE_LAYER);
+		layers.add(startBtn, JLayeredPane.PALETTE_LAYER);
+		layers.add(exitBtn, JLayeredPane.PALETTE_LAYER);
+
+		// -----------------------
+		// Load image into stage
+		// -----------------------
 		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
 		ContentFactory factory = new ContentFactory(finder);
-		Content content = factory.createContent("bernstein2.jpg");
+		Content content = factory.createContent(imageName);
 
-		// Add content to stage
 		loseStage.add(content);
-
-		// --------------------
-		// START ANIMATION
-		// --------------------
 		loseStage.start();
-
-		// Refresh UI
-		cp.revalidate();
-		cp.repaint();
 	}
 
 	public void viewCharacter(String characterName) {
@@ -281,15 +293,26 @@ public class Viewer extends JApplication implements ActionListener {
 	@Override
 	public void init() {
 		startWindow();
-
 		startHealthMonitor();
+		startDeathMonitor();
 	}
 
 	public void startHealthMonitor() {
 		Timer timer = new Timer(50, e -> { // check every 50 ms
 			if (!((Tracks) stage).isAlive()) {
 				((Timer) e.getSource()).stop(); // stop checking
-				lostScreen(); // show losing screen
+				endScreen("bernstein2.png"); // show losing screen
+			}
+		});
+
+		timer.start();
+	}
+
+	public void startDeathMonitor() {
+		Timer timer = new Timer(50, e -> { // check every 50 ms
+			if (!((Tracks) stage).bossAlive()) {
+				((Timer) e.getSource()).stop(); // stop checking
+				endScreen("bernstein1.png"); // show losing screen
 			}
 		});
 
