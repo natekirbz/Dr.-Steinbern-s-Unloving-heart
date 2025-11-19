@@ -53,6 +53,7 @@ public class Viewer extends JApplication implements ActionListener {
 	// Fonts
 	private final Font titleFont = new Font("Arial", Font.BOLD | Font.ITALIC, 50);
 	private final Font buttonFont = new Font("Arial", Font.BOLD | Font.ITALIC, 30);
+	private static HashMap<Clip, Integer> audioClips = new HashMap<>();
 
 	public Viewer(final String[] args) {
 		super(WIDTH, HEIGHT);
@@ -62,7 +63,6 @@ public class Viewer extends JApplication implements ActionListener {
 
 	public static void main(final String[] args) throws IOException {
 		JApplication app = new Viewer(args);
-		playAudio("demo-music.wav");
 		invokeInEventDispatchThread(app);
 	}
 
@@ -155,6 +155,7 @@ public class Viewer extends JApplication implements ActionListener {
 		// Character Select Button
 		JButton characterBtn = createButton(CHARACTER, 400, 300, 300, 100, titleFont);
 		contentPane.add(characterBtn);
+		playAudio("demo-music.wav");
 	}
 
 	// --------------------------------------------------------
@@ -165,6 +166,7 @@ public class Viewer extends JApplication implements ActionListener {
 		VisualizationView view = stage.getView();
 		cp.add(view);
 		stage.start();
+		playAudio("game-theme.wav");
 	}
 
 	public void endScreen(String imageName) {
@@ -173,6 +175,7 @@ public class Viewer extends JApplication implements ActionListener {
 
 		JPanel cp = resetContentPane();
 		cp.setLayout(null);
+		playAudio("lose-screen.wav");
 
 		// ---- Layered Pane ----
 		JLayeredPane layers = new JLayeredPane();
@@ -268,6 +271,7 @@ public class Viewer extends JApplication implements ActionListener {
 		contentPane.add(characterBtns.get("Sheep"));
 		characterBtns.put("Llama", createButton("Llama", 380, 300, 150, 60, buttonFont));
 		contentPane.add(characterBtns.get("Llama"));
+		playAudio("character-select.wav");
 
 	}
 
@@ -325,10 +329,18 @@ public class Viewer extends JApplication implements ActionListener {
 		try (BufferedInputStream buf = new BufferedInputStream(raw);
 				AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
 			Clip clip = AudioSystem.getClip();
+			storeClip(clip);
 			clip.open(audio);
 			clip.start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void storeClip (Clip clip) {
+		for (Clip c : audioClips.keySet()) {
+			c.stop();
+		}
+		audioClips.put(clip, 1);
 	}
 }
