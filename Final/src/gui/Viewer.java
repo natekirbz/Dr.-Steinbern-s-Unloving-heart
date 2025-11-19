@@ -72,26 +72,32 @@ public class Viewer extends JApplication implements ActionListener {
 		switch (action) {
 			case START:
 				handleStart();
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case CHARACTER:
 				handleCharacter();
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case "Dolphin":
 				setCharacter(action);
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case "Sheep":
 				setCharacter(action);
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case "Llama":
 				setCharacter(action);
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case "Confirm":
 				startWindow();
+				playButtonAudio("Button-Press.wav");
 				break;
 
 			case "Exit":
@@ -342,5 +348,18 @@ public class Viewer extends JApplication implements ActionListener {
 			c.stop();
 		}
 		audioClips.put(clip, 1);
+	}
+
+	public static void playButtonAudio(String audioFile) {
+		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+		InputStream raw = finder.findInputStream(audioFile);
+		try (BufferedInputStream buf = new BufferedInputStream(raw);
+				AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
+			Clip clip = AudioSystem.getClip();
+			clip.open(audio);
+			clip.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
