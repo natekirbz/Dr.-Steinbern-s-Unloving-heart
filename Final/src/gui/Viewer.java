@@ -166,7 +166,7 @@ public class Viewer extends JApplication implements ActionListener {
 		VisualizationView view = stage.getView();
 		cp.add(view);
 		stage.start();
-		playAudio("game-theme.wav");
+		playAudio("Castle-theme.wav");
 	}
 
 	public void endScreen(String imageName) {
@@ -175,7 +175,7 @@ public class Viewer extends JApplication implements ActionListener {
 
 		JPanel cp = resetContentPane();
 		cp.setLayout(null);
-		playAudio("lose-screen.wav");
+		playAudio("The Emperor.wav");
 
 		// ---- Layered Pane ----
 		JLayeredPane layers = new JLayeredPane();
