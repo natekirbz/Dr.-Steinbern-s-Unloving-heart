@@ -10,6 +10,8 @@ import visual.statik.TransformableContent;
 /**
  * Enemy character that moves towards the player and affects the player's health
  * on collision.
+ * 
+ * This work complies with the JMU Honor Code.
  */
 public class Enemy extends RuleBasedSprite {
    private double x;      // horizontal position

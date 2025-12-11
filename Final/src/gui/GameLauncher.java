@@ -3,7 +3,9 @@ package gui;
 import app.JApplication;
 
 /**
- * GameLauncher to start the Tracks game.
+ * GameLauncher to start the game.
+ * 
+ * This work complies with the JMU Honor Code.
  */
 public class GameLauncher extends Viewer {
     /**
@@ -14,7 +16,7 @@ public class GameLauncher extends Viewer {
     public GameLauncher(final String[] args) {
         super(args);
     }
-    
+
     /**
      * Main method to launch the game.
      * 

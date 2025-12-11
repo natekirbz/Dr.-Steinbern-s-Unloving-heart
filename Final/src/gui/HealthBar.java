@@ -8,7 +8,11 @@ import java.awt.geom.Rectangle2D;
 import visual.dynamic.described.RuleBasedSprite;
 import visual.statik.described.AggregateContent;
 import visual.statik.described.Content;
-
+/**
+ * This work complies with the JMU Honor Code.
+ * 
+ * Health bar representation for the player.
+ */
 public class HealthBar extends RuleBasedSprite {
 
     private float currentWidth;

@@ -18,6 +18,8 @@ import resources.Marker;
 /**
  * Tracks stage for the game, containing player, enemies, powerups, and health
  * bars.
+ * 
+ * This work complies with the JMU Honor Code.
  */
 public class Tracks extends Stage {
 

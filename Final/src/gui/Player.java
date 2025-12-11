@@ -6,6 +6,8 @@ import visual.dynamic.described.RuleBasedSprite;
 import visual.statik.TransformableContent;
 
 /**
+ * This work complies with the JMU Honor Code.
+ * 
  * Player character that can move between tracks based on keyboard input.
  */
 public class Player extends RuleBasedSprite implements KeyListener {

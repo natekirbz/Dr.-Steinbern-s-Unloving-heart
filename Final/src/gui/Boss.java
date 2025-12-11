@@ -9,6 +9,8 @@ import visual.statik.TransformableContent;
 
 /**
  * Boss character that has multiple states and can take damage.
+ * 
+ * This work complies with the JMU Honor Code.
  */
 public class Boss extends RuleBasedSprite{
     protected double maxX;
