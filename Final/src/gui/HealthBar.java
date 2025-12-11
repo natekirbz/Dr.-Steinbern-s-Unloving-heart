@@ -56,18 +56,50 @@ public class HealthBar extends RuleBasedSprite {
 
     // Shrink from the right by using scale
     public void shrink(double amount) {
-        currentWidth -= amount;
-        System.out.println(getAlive());
+        // clamp amount so we don't go below zero
+        float amt = (float) amount;
+        if (amt < 0) return;
+        float prevWidth = currentWidth;
+        currentWidth = Math.max(0f, currentWidth - amt);
+
+        // remove previous visuals and recreate so we don't accumulate many Content objects
+        try {
+            aggregateContent.remove(barContent);
+        } catch (Exception e) {
+            // some AggregateContent implementations may not support clear(); fall back to adding
+        }
+
         // Create the remaining red health bar
         Content redBar = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, Color.RED, new BasicStroke());
-        // Create the black (lost health) bar on the right
-        Content blackBar = new Content(new Rectangle2D.Float(currentWidth, 0, (float) amount, barHeight), Color.BLACK, Color.BLACK, new BasicStroke());
+        // Create the black (lost health) bar on the right (only if some was lost)
+        if (currentWidth < prevWidth) {
+            Content blackBar = new Content(new Rectangle2D.Float(currentWidth, 0, prevWidth - currentWidth, barHeight), Color.BLACK, Color.BLACK, new BasicStroke());
+            aggregateContent.add(blackBar);
+        }
         aggregateContent.add(redBar);
-        aggregateContent.add(blackBar);
     }
 
     public boolean getAlive() {
-        return currentWidth >= 0;
+        return currentWidth > 0;
+    }
+
+    // New method: restore bar to full width/initial visuals
+    public void reset() {
+        // restore width & state
+        this.currentWidth = (float) this.width;
+        this.hitCount = 0;
+        this.fillColor = Color.RED;
+
+        // clear old visuals and recreate the initial bar content
+        try {
+            aggregateContent.remove(barContent);
+        } catch (Exception e) {
+            // ignore if not supported
+        }
+
+        barContent = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, fillColor, new BasicStroke());
+        barContent.setLocation(0, 0);
+        aggregateContent.add(barContent);
     }
 
     @Override

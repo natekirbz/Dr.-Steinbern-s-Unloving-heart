@@ -1,7 +1,6 @@
 package gui;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -162,6 +161,7 @@ public class Viewer extends JApplication implements ActionListener {
 	// --------------------------------------------------------
 	public void handleStart() {
 		JPanel cp = resetContentPane();
+		((Tracks) stage).resetTracks();
 		VisualizationView view = stage.getView();
 		cp.add(view);
 		stage.start();
@@ -301,7 +301,7 @@ public class Viewer extends JApplication implements ActionListener {
 		Timer timer = new Timer(50, e -> { // check every 50 ms
 			if (!((Tracks) stage).isAlive()) {
 				((Timer) e.getSource()).stop(); // stop checking
-				endScreen("bernstein2.png"); // show losing screen
+				endScreen("bernstein2.jpg"); // show losing screen
 			}
 		});
 
@@ -312,7 +312,7 @@ public class Viewer extends JApplication implements ActionListener {
 		Timer timer = new Timer(50, e -> { // check every 50 ms
 			if (!((Tracks) stage).bossAlive()) {
 				((Timer) e.getSource()).stop(); // stop checking
-				endScreen("bernstein1.png"); // show losing screen
+				endScreen("bernstein1.jpg"); // show losing screen
 			}
 		});
 

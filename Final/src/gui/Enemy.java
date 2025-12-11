@@ -52,7 +52,7 @@ public class Enemy extends RuleBasedSprite {
       if (player != null && this.intersects(player)) {
          hitCount++;
          if (hitCount > 4) {
-            System.out.println("hit" + hitCount + " " + this.imageIndex);
+            // System.out.println("hit" + hitCount + " " + this.imageIndex);
             healthBar.shrink(4);
          }
       }

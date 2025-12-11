@@ -59,7 +59,7 @@ public class Powerup extends RuleBasedSprite {
       if (player != null && this.intersects(player)) {
          //do damage to heart
          healthBar.shrink(10);
-        System.out.print("baloon");
+      //   System.out.print("baloon");
         Rectangle2D bounds = getContent().getBounds2D(false);
          x = stageWidth + bounds.getWidth();
          y = TRACKS[rng.nextInt(TRACKS.length)];

@@ -6,14 +6,6 @@ import java.util.Random;
 import visual.dynamic.described.RuleBasedSprite;
 import visual.dynamic.described.Sprite;
 import visual.statik.TransformableContent;
-import visual.statik.sampled.Content;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.awt.geom.Rectangle2D;
-import java.awt.RenderingHints;
 
 public class Boss extends RuleBasedSprite{
     protected double maxX;
