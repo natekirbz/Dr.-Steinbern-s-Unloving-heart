@@ -7,6 +7,9 @@ import visual.dynamic.described.RuleBasedSprite;
 import visual.dynamic.described.Sprite;
 import visual.statik.TransformableContent;
 
+/**
+ * Boss character that has multiple states and can take damage.
+ */
 public class Boss extends RuleBasedSprite{
     protected double maxX;
     protected double maxY;
@@ -24,6 +27,14 @@ public class Boss extends RuleBasedSprite{
     private float grayFactor = 1.0f; 
 
 
+    /**
+     * Constructor for Boss.
+     * 
+     * @param contents the visual contents of the boss
+     * @param width    the width of the stage
+     * @param height   the height of the stage
+     * @param health   the initial health of the boss
+     */
     public Boss(final TransformableContent[] contents, final double width, final double height, final int health) {
         super(contents[0]);
         this.contents = contents;
@@ -38,26 +49,30 @@ public class Boss extends RuleBasedSprite{
         this.health = health;
     }
 
+    /**
+     * Get the content of the boss.
+     * 
+     * @return the TransformableContent of the boss
+     */
+    @Override
     public TransformableContent getContent() {
       return this.contents[this.state];
     }
 
+    /**
+     * Inflict damage to the boss, reducing its health and updating its appearance.
+     */
     public void damage() {
         this.health--;
-
-        // reduce saturation by 10% per hit
-        grayFactor -= 0.1f;
-        if (grayFactor < 0f) grayFactor = 0f;
-
-        applyGrayTransform();
-    }
-
-    private void applyGrayTransform() {
-        
     }
 
 
 
+    /**
+     * Handle tick events to update boss state and check for collisions.
+     * 
+     * @param time the current time tick
+     */
     @Override
     public void handleTick(final int time) {
         Iterator<Sprite> i = this.antagonists.iterator();

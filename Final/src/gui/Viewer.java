@@ -42,9 +42,11 @@ import java.awt.image.BufferedImage;
  */
 public class Viewer extends JApplication implements ActionListener {
 
-    /* ---------------------------------------------------------------------
+    /*
+     * ---------------------------------------------------------------------
      * Window & layout constants (no magic numbers in method bodies)
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
     public static final int WIDTH = 800;
     public static final int HEIGHT = 450;
 
@@ -91,7 +93,8 @@ public class Viewer extends JApplication implements ActionListener {
     // Main stage used by the game
     public Stage stage;
 
-    // map of character selection buttons so we can replace a chosen button with Confirm
+    // map of character selection buttons so we can replace a chosen button with
+    // Confirm
     private final Map<String, JButton> characterBtns;
 
     // action command constants (avoid string literals in switch)
@@ -109,7 +112,8 @@ public class Viewer extends JApplication implements ActionListener {
     private static final HashMap<Clip, Integer> audioClips = new HashMap<>();
 
     /**
-     * Construct the Viewer. Use a default stage initialized with the default character.
+     * Construct the Viewer. Use a default stage initialized with the default
+     * character.
      */
     public Viewer(final String[] args) {
         super(WIDTH, HEIGHT);
@@ -120,6 +124,8 @@ public class Viewer extends JApplication implements ActionListener {
 
     /**
      * Central action handler for UI buttons.
+     * 
+     * @param evt the ActionEvent triggered by a button press
      */
     @Override
     public void actionPerformed(final ActionEvent evt) {
@@ -159,11 +165,15 @@ public class Viewer extends JApplication implements ActionListener {
     }
 
     /**
-     * Replace the selected character button with a Confirm button and update the stage.
+     * Replace the selected character button with a Confirm button and update the
+     * stage.
+     * 
+     * @param action the character name selected
      */
     private void setCharacter(final String action) {
         String characterFile = action + ".png";
-        // create a fresh stage for the selected character (same functionality as before)
+        // create a fresh stage for the selected character (same functionality as
+        // before)
         this.stage = new Tracks(characterFile);
 
         // update the character selection UI to show "Confirm"
@@ -188,9 +198,11 @@ public class Viewer extends JApplication implements ActionListener {
         getContentPane().repaint();
     }
 
-    /* ------------------------------------------------------------------
+    /*
+     * ------------------------------------------------------------------
      * Main Start Window (title + buttons)
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
 
     /**
      * Build and display the main start window.
@@ -209,16 +221,19 @@ public class Viewer extends JApplication implements ActionListener {
         contentPane.add(startBtn);
 
         // Character Select Button
-        JButton characterBtn = createButton(CHARACTER, CHARACTER_SELECT_BTN_X, CHARACTER_SELECT_BTN_Y, START_BTN_W, START_BTN_H, titleFont);
+        JButton characterBtn = createButton(CHARACTER, CHARACTER_SELECT_BTN_X, CHARACTER_SELECT_BTN_Y, START_BTN_W,
+                START_BTN_H, titleFont);
         contentPane.add(characterBtn);
 
         // background audio for the start screen
         playAudio(AUDIO_DEMO);
     }
 
-    /* ------------------------------------------------------------------
+    /*
+     * ------------------------------------------------------------------
      * Game start: show the stage inside the content pane
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
 
     /**
      * Replace the current UI with the stage view and start the game's stage loop.
@@ -247,13 +262,17 @@ public class Viewer extends JApplication implements ActionListener {
         startDeathMonitor();
     }
 
-    /* ------------------------------------------------------------------
+    /*
+     * ------------------------------------------------------------------
      * End / lose screens
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
 
     /**
      * Show the end-screen with a given image and two buttons.
      * This preserves previous functionality while making layout constants explicit.
+     * 
+     * @param imageName the image file to show on the end screen
      */
     public void endScreen(final String imageName) {
         if (stage != null) {
@@ -306,12 +325,16 @@ public class Viewer extends JApplication implements ActionListener {
         loseStage.start();
     }
 
-    /* ------------------------------------------------------------------
+    /*
+     * ------------------------------------------------------------------
      * Character selection UI
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
 
     /**
      * Utility to show a character portrait next to the selection buttons.
+     * 
+     * @param characterName the image file name of the character to show
      */
     public void viewCharacter(final String characterName) {
         try (InputStream in = getClass().getResourceAsStream(RESOURCE_PREFIX + characterName)) {
@@ -329,7 +352,8 @@ public class Viewer extends JApplication implements ActionListener {
             getContentPane().repaint();
 
         } catch (IOException e) {
-            // Print stack trace for student-level debugging; keep behavior otherwise unchanged
+            // Print stack trace for student-level debugging; keep behavior otherwise
+            // unchanged
             e.printStackTrace();
         }
     }
@@ -359,12 +383,15 @@ public class Viewer extends JApplication implements ActionListener {
         playAudio(AUDIO_CHAR_SELECT);
     }
 
-    /* ------------------------------------------------------------------
+    /*
+     * ------------------------------------------------------------------
      * Utility methods
-     * ------------------------------------------------------------------ */
+     * ------------------------------------------------------------------
+     */
 
     /**
-     * Remove everything from the content pane and return it so callers can re-populate it.
+     * Remove everything from the content pane and return it so callers can
+     * re-populate it.
      */
     private JPanel resetContentPane() {
         JPanel cp = (JPanel) getContentPane();
@@ -375,7 +402,17 @@ public class Viewer extends JApplication implements ActionListener {
     }
 
     /**
-     * Create a JButton with standard properties and register this class as its listener.
+     * Create a JButton with standard properties and register this class as its
+     * listener.
+     * 
+     * @param text the button label
+     * @param x    the x position
+     * @param y    the y position
+     * @param w    the button width
+     * @param h    the button height
+     * @param font the button font
+     * 
+     * @return the constructed JButton
      */
     private JButton createButton(String text, int x, int y, int w, int h, Font font) {
         JButton btn = new JButton(text);
@@ -442,6 +479,9 @@ public class Viewer extends JApplication implements ActionListener {
 
     /**
      * Replace any currently playing clip(s) and remember the latest clip.
+     * 
+     * @param clip the Clip to store
+     * 
      */
     private static void storeClip(final Clip clip) {
         for (Clip c : audioClips.keySet()) {
@@ -452,6 +492,8 @@ public class Viewer extends JApplication implements ActionListener {
 
     /**
      * Play a short button sound without replacing the demo/looping music.
+     * 
+     * @param audioFile the audio file to play
      */
     public static void playButtonAudio(final String audioFile) {
         ResourceFinder finder = ResourceFinder.createInstance(Marker.class);

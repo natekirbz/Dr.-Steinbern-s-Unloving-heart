@@ -7,6 +7,10 @@ import visual.dynamic.described.RuleBasedSprite;
 import visual.dynamic.described.Sprite;
 import visual.statik.TransformableContent;
 
+/**
+ * Enemy character that moves towards the player and affects the player's health
+ * on collision.
+ */
 public class Enemy extends RuleBasedSprite {
    private double x;      // horizontal position
    private double y;      // vertical position (track)
@@ -22,6 +26,16 @@ public class Enemy extends RuleBasedSprite {
    
    private TransformableContent[] contents;
    private int imageIndex;
+
+   /**
+    * Constructor for Enemy.
+    * 
+    * @param contents     the visual contents of the enemy
+    * @param initialIndex the initial image index for the enemy
+    * @param stageWidth   the width of the stage
+    * @param stageHeight  the height of the stage
+    * @param hb           the health bar to affect on collision
+    */
    public Enemy(final TransformableContent[] contents, final int initialIndex, final double stageWidth, final double stageHeight, final HealthBar hb) {
       super(contents[initialIndex]);
 
@@ -40,6 +54,11 @@ public class Enemy extends RuleBasedSprite {
       this.setLocation(x, y);
    }
 
+   /**
+    * Handle tick events to update enemy position and check for collisions.
+    * 
+    * @param time the current time tick
+    */
    @Override
    public void handleTick(final int time) {
       x -= speed;
@@ -74,7 +93,11 @@ public class Enemy extends RuleBasedSprite {
       setLocation(x, y);
    }
 
-
+   /**
+    * Get the content of the enemy.
+    * 
+    * @return the TransformableContent of the enemy
+    */
    @Override
    public TransformableContent getContent() {
       if (this.contents != null && this.contents.length > 0) {

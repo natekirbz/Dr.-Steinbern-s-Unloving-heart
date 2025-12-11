@@ -15,6 +15,10 @@ import visual.VisualizationView;
 
 import resources.Marker;
 
+/**
+ * Tracks stage for the game, containing player, enemies, powerups, and health
+ * bars.
+ */
 public class Tracks extends Stage {
 
 	private HealthBar healthBar;
@@ -22,12 +26,20 @@ public class Tracks extends Stage {
 
 	private String playerName;
 
+	/**
+	 * Constructor for Tracks stage.
+	 * 
+	 * @param playerName the name of the player character
+	 */
 	public Tracks(final String playerName) {
 		super(50);
 		this.playerName = playerName;
 		makeTracks();
 	}
 
+	/**
+	 * Set up the stage with player, enemies, powerups, and health bars.
+	 */
 	private void makeTracks() {
 		int stageWidth = 800;
 		int stageHeight = 450;
@@ -96,17 +108,20 @@ public class Tracks extends Stage {
 		setBackground(Color.gray);
 	}
 
+	/**
+	 * Reset the stage by clearing all sprites and rebuilding.
+	 */
 	public void resetTracks() {
-		
+
 		// Stop the stage loop
 		this.stop();
-
 
 		// Remove all sprites from the stage (clear Stage internals)
 		try {
 			this.clear(); // remove all sprites added via add(...)
 		} catch (NoSuchMethodError | NoClassDefFoundError e) {
-			// Some runtime versions may not expose clear(); fall back to best-effort removal
+			// Some runtime versions may not expose clear(); fall back to best-effort
+			// removal
 			System.err.println("Stage.clear() unavailable; falling back to view removal.");
 		}
 
@@ -119,7 +134,6 @@ public class Tracks extends Stage {
 		} catch (Exception e) {
 			System.err.println("Error clearing view contents: " + e.getMessage());
 		}
-
 
 		// Reset existing health bars (if present) to ensure no leftover state
 		if (healthBar != null) {
@@ -144,10 +158,20 @@ public class Tracks extends Stage {
 		this.start();
 	}
 
+	/**
+	 * Check if the player is still alive.
+	 * 
+	 * @return true if the player is alive, false otherwise
+	 */
 	public boolean isAlive() {
 		return this.healthBar.getAlive();
 	}
 
+	/**
+	 * Check if the boss is still alive.
+	 * 
+	 * @return true if the boss is alive, false otherwise
+	 */
 	public boolean bossAlive() {
 		return this.bossBar.getAlive();
 	}

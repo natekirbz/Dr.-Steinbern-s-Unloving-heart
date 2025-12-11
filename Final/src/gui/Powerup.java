@@ -12,8 +12,8 @@ import visual.statik.TransformableContent;
  * `shouldSpawn()` helper so spawners can decide to create this type less often.
  */
 public class Powerup extends RuleBasedSprite {
-   private double x;      // horizontal position
-   private double y;      // vertical position (track)
+   private double x; // horizontal position
+   private double y; // vertical position (track)
    private double speed;
    private int stageWidth;
    private int stageHeight;
@@ -21,12 +21,22 @@ public class Powerup extends RuleBasedSprite {
    private static final Random rng = new Random();
    private HealthBar healthBar; // reference to the player's health
 
-   private static final int[] TRACKS = {100, 225, 350}; // all 3 tracks
+   private static final int[] TRACKS = { 100, 225, 350 }; // all 3 tracks
 
    private TransformableContent content;
    private int imageIndex;
 
-   public Powerup(final TransformableContent content, final int initialIndex, final double stageWidth, final double stageHeight, final HealthBar hb) {
+   /**
+    * Constructor for Powerup.
+    * 
+    * @param content      the visual content of the powerup
+    * @param initialIndex the initial image index for the powerup
+    * @param stageWidth   the width of the stage
+    * @param stageHeight  the height of the stage
+    * @param hb           the health bar to affect on collision
+    */
+   public Powerup(final TransformableContent content, final int initialIndex, final double stageWidth,
+         final double stageHeight, final HealthBar hb) {
       super(content);
 
       this.content = content;
@@ -47,35 +57,45 @@ public class Powerup extends RuleBasedSprite {
       this.setLocation(x, y);
    }
 
+   /**
+    * Handle tick events to update powerup position and check for collisions.
+    * 
+    * @param time the current time tick
+    */
    @Override
    public void handleTick(final int time) {
       x -= speed;
       Sprite player = null;
 
       if (this.antagonists.size() > 0) {
-         player = (Sprite)this.antagonists.get(0);
+         player = (Sprite) this.antagonists.get(0);
       }
 
       if (player != null && this.intersects(player)) {
-         //do damage to heart
+         // do damage to heart
          healthBar.shrink(10);
-      //   System.out.print("baloon");
-        Rectangle2D bounds = getContent().getBounds2D(false);
+         // System.out.print("baloon");
+         Rectangle2D bounds = getContent().getBounds2D(false);
          x = stageWidth + bounds.getWidth();
          y = TRACKS[rng.nextInt(TRACKS.length)];
-         speed += (int)(Math.random() * 2);
+         speed += (int) (Math.random() * 2);
       }
 
       if (x < -50) {
          Rectangle2D bounds = getContent().getBounds2D(false);
          x = stageWidth + bounds.getWidth();
          y = TRACKS[rng.nextInt(TRACKS.length)];
-         speed += (int)(Math.random() * 2);
+         speed += (int) (Math.random() * 2);
          // pick a different image index each time we wrap
       }
       setLocation(x, y);
    }
 
+   /**
+    * Get the content of the powerup.
+    * 
+    * @return the TransformableContent of the powerup
+    */
    @Override
    public TransformableContent getContent() {
       return super.getContent();
