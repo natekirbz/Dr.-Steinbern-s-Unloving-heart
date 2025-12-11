@@ -35,8 +35,8 @@ public class Powerup extends RuleBasedSprite {
     * @param stageHeight  the height of the stage
     * @param hb           the health bar to affect on collision
     */
-   public Powerup(final TransformableContent content, final int initialIndex, final double stageWidth,
-         final double stageHeight, final HealthBar hb) {
+   public Powerup(final TransformableContent content, final int initialIndex,
+      final double stageWidth, final double stageHeight, final HealthBar hb) {
       super(content);
 
       this.content = content;

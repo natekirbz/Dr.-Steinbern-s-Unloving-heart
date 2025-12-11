@@ -78,7 +78,8 @@ public class Tracks extends Stage {
 				enemyContents[j] = tcFactory.createContent("bernstein" + j + ".jpg", 4, false);
 			}
 			int initialIndex = (int) (Math.random() * enemyContents.length);
-			Enemy gold = new Enemy(enemyContents, initialIndex, (double) stageWidth, (double) stageHeight, healthBar);
+			Enemy gold = new Enemy(enemyContents, initialIndex, (double) stageWidth,
+				(double) stageHeight, healthBar);
 			gold.setScale(0.1);
 			gold.addAntagonist(player);
 			add(gold);
@@ -86,8 +87,8 @@ public class Tracks extends Stage {
 
 		// spawn a powerup occasionally
 		TransformableContent goldContent = tcFactory.createContent("monster.jpeg", 4, false);
-		Powerup energy = new Powerup(goldContent, (int) (Math.random() * 3), (double) stageWidth, (double) stageHeight,
-				bossBar); // random enemy sprite implement later
+		Powerup energy = new Powerup(goldContent, (int) (Math.random() * 3), (double) stageWidth, 
+			(double) stageHeight, bossBar); // random enemy sprite implement later
 		energy.setScale(0.3);
 		energy.addAntagonist(player);
 		add(energy);

@@ -44,8 +44,8 @@ public class HealthBar extends RuleBasedSprite {
         this.height = height;
         // create the initial bar content and keep a reference so we can update it on
         // hits
-        barContent = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, fillColor,
-                new BasicStroke());
+        barContent = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight),
+            Color.BLACK, fillColor, new BasicStroke());
         barContent.setLocation(0, 0);
         aggregateContent.add(barContent);
     }
@@ -99,12 +99,12 @@ public class HealthBar extends RuleBasedSprite {
         }
 
         // Create the remaining red health bar
-        Content redBar = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, Color.RED,
-                new BasicStroke());
+        Content redBar = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight),
+            Color.BLACK, Color.RED, new BasicStroke());
         // Create the black (lost health) bar on the right (only if some was lost)
         if (currentWidth < prevWidth) {
-            Content blackBar = new Content(new Rectangle2D.Float(currentWidth, 0, prevWidth - currentWidth, barHeight),
-                    Color.BLACK, Color.BLACK, new BasicStroke());
+            Content blackBar = new Content(new Rectangle2D.Float(currentWidth, 0, 
+                prevWidth - currentWidth, barHeight), Color.BLACK, Color.BLACK, new BasicStroke());
             aggregateContent.add(blackBar);
         }
         aggregateContent.add(redBar);
@@ -128,8 +128,8 @@ public class HealthBar extends RuleBasedSprite {
             // ignore if not supported
         }
 
-        barContent = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight), Color.BLACK, fillColor,
-                new BasicStroke());
+        barContent = new Content(new Rectangle2D.Float(0, 0, currentWidth, barHeight),
+            Color.BLACK, fillColor, new BasicStroke());
         barContent.setLocation(0, 0);
         aggregateContent.add(barContent);
     }

@@ -186,7 +186,8 @@ public class Viewer extends JApplication implements ActionListener {
         getContentPane().remove(tempButton);
 
         // create a Confirm button in the same place and add it to the UI
-        JButton confirmButton = createButton(CONFIRM, bounds.x, bounds.y, bounds.width, bounds.height, buttonFont);
+        JButton confirmButton = createButton(CONFIRM, bounds.x, bounds.y, bounds.width,
+            bounds.height, buttonFont);
         characterBtns.put(action, confirmButton);
         getContentPane().add(confirmButton);
 
@@ -217,11 +218,13 @@ public class Viewer extends JApplication implements ActionListener {
         contentPane.add(title);
 
         // Start Button
-        JButton startBtn = createButton(START, START_BTN_X, START_BTN_Y, START_BTN_W, START_BTN_H, titleFont);
+        JButton startBtn = createButton(START, START_BTN_X, START_BTN_Y, START_BTN_W,
+            START_BTN_H, titleFont);
         contentPane.add(startBtn);
 
         // Character Select Button
-        JButton characterBtn = createButton(CHARACTER, CHARACTER_SELECT_BTN_X, CHARACTER_SELECT_BTN_Y, START_BTN_W,
+        JButton characterBtn = createButton(CHARACTER, CHARACTER_SELECT_BTN_X,
+            CHARACTER_SELECT_BTN_Y, START_BTN_W,
                 START_BTN_H, titleFont);
         contentPane.add(characterBtn);
 
@@ -375,7 +378,8 @@ public class Viewer extends JApplication implements ActionListener {
         int spacing = 180;
         for (int i = 0; i < CHARACTERS.length; i++) {
             String name = CHARACTERS[i];
-            JButton btn = createButton(name, startX + i * spacing, 300, CHAR_BTN_W, CHAR_BTN_H, buttonFont);
+            JButton btn = createButton(name, startX + i * spacing, 300, CHAR_BTN_W,
+                CHAR_BTN_H, buttonFont);
             characterBtns.put(name, btn);
             contentPane.add(btn);
         }
