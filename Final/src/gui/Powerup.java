@@ -26,7 +26,7 @@ public class Powerup extends RuleBasedSprite {
    private TransformableContent content;
    private int imageIndex;
 
-   public Powerup(TransformableContent content, int initialIndex, double stageWidth, double stageHeight, HealthBar hb) {
+   public Powerup(final TransformableContent content, final int initialIndex, final double stageWidth, final double stageHeight, final HealthBar hb) {
       super(content);
 
       this.content = content;
@@ -48,7 +48,7 @@ public class Powerup extends RuleBasedSprite {
    }
 
    @Override
-   public void handleTick(int time) {
+   public void handleTick(final int time) {
       x -= speed;
       Sprite player = null;
 

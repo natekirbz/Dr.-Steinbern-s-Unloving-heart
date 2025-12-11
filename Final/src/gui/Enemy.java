@@ -22,7 +22,7 @@ public class Enemy extends RuleBasedSprite {
    
    private TransformableContent[] contents;
    private int imageIndex;
-   public Enemy(TransformableContent[] contents, int initialIndex, double stageWidth, double stageHeight, HealthBar hb) {
+   public Enemy(final TransformableContent[] contents, final int initialIndex, final double stageWidth, final double stageHeight, final HealthBar hb) {
       super(contents[initialIndex]);
 
       this.contents = contents;
@@ -41,7 +41,7 @@ public class Enemy extends RuleBasedSprite {
    }
 
    @Override
-   public void handleTick(int time) {
+   public void handleTick(final int time) {
       x -= speed;
       Sprite player = null;
 

@@ -11,7 +11,7 @@ public class Player extends RuleBasedSprite implements KeyListener{
     private static final int[] TRACKS = {100, 225, 350}; // all 3 tracks
     private int current;
 
-    public Player(TransformableContent content, double stageWidth, double stageHeight) {
+    public Player(final TransformableContent content, final double stageWidth, final double stageHeight) {
         super(content);
         this.top = TRACKS[1];
         this.left = 100;
@@ -25,7 +25,7 @@ public class Player extends RuleBasedSprite implements KeyListener{
 
     
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         int key = e.getKeyCode();
         
         if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
@@ -51,15 +51,15 @@ public class Player extends RuleBasedSprite implements KeyListener{
     }
     
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent e) {
         //do nothing
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent e) {
         // do nothing
     }
 
-    public void setCharacter(String character){
+    public void setCharacter(final String character){
     }
 }

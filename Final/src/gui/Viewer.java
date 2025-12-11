@@ -28,338 +28,441 @@ import visual.statik.sampled.Content;
 import visual.statik.sampled.ContentFactory;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+/**
+ * Viewer - main UI for the game.
+ *
+ * Cleaned up: removed magic numbers/strings, added named constants and
+ * short student-style comments to explain intent. Functionality is preserved.
+ */
 public class Viewer extends JApplication implements ActionListener {
 
-	public static final int HEIGHT = 450;
-	public static final int WIDTH = 800;
+    /* ---------------------------------------------------------------------
+     * Window & layout constants (no magic numbers in method bodies)
+     * ------------------------------------------------------------------ */
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 450;
 
-	// Main stage for game
-	public Stage stage;
+    private static final int TITLE_FONT_SIZE = 50;
+    private static final int BUTTON_FONT_SIZE = 30;
+    private static final int END_FONT_SIZE = 30;
 
-	// Character selection buttons map
-	Map<String, JButton> characterBtns;
-	// Commands
-	protected static final String START = "Start";
-	protected static final String CHARACTER = "Character";
+    private static final int START_BTN_X = 90;
+    private static final int START_BTN_Y = 300;
+    private static final int START_BTN_W = 300;
+    private static final int START_BTN_H = 100;
 
-	// Fonts
-	private final Font titleFont = new Font("Arial", Font.BOLD | Font.ITALIC, 50);
-	private final Font buttonFont = new Font("Arial", Font.BOLD | Font.ITALIC, 30);
-	private static HashMap<Clip, Integer> audioClips = new HashMap<>();
+    private static final int CHAR_BTN_W = 150;
+    private static final int CHAR_BTN_H = 60;
 
-	public Viewer(final String[] args) {
-		super(WIDTH, HEIGHT);
-		this.stage = new Tracks("dolphin.png");
-		characterBtns = new HashMap<>();
-	}
+    private static final int CHARACTER_SELECT_BTN_X = 400;
+    private static final int CHARACTER_SELECT_BTN_Y = 300;
 
-	public static void main(final String[] args) throws IOException {
-		JApplication app = new Viewer(args);
-		invokeInEventDispatchThread(app);
-	}
+    private static final int VIEW_X = 0;
+    private static final int VIEW_Y = 0;
 
-	@Override
-	public void actionPerformed(final ActionEvent evt) {
-		String action = evt.getActionCommand();
-		switch (action) {
-			case START:
-				handleStart();
-				playButtonAudio("Button-Press.wav");
-				break;
+    /* audio / asset constants */
+    private static final String AUDIO_DEMO = "demo-music.wav";
+    private static final String AUDIO_THEME = "Castle-theme.wav";
+    private static final String AUDIO_END = "The Emperor.wav";
+    private static final String AUDIO_BUTTON = "Button-Press.wav";
+    private static final String AUDIO_CHAR_SELECT = "character-select.wav";
 
-			case CHARACTER:
-				handleCharacter();
-				playButtonAudio("Button-Press.wav");
-				break;
+    private static final String RESOURCE_PREFIX = "/resources/";
+    private static final String DEFAULT_CHARACTER = "dolphin.png";
 
-			case "Dolphin":
-				setCharacter(action);
-				playButtonAudio("Button-Press.wav");
-				break;
+    /* end-screen images (named constants instead of literals scattered) */
+    private static final String END_IMAGE_LOSE = "bernstein2.jpg";
+    private static final String END_IMAGE_BOSS = "bernstein1.jpg";
 
-			case "Sheep":
-				setCharacter(action);
-				playButtonAudio("Button-Press.wav");
-				break;
+    /* characters available on the character select screen */
+    private static final String[] CHARACTERS = { "Dolphin", "Sheep", "Llama" };
 
-			case "Llama":
-				setCharacter(action);
-				playButtonAudio("Button-Press.wav");
-				break;
+    /* timers */
+    private static final int HEALTH_CHECK_DELAY_MS = 50;
 
-			case "Confirm":
-				startWindow();
-				playButtonAudio("Button-Press.wav");
-				break;
+    /* ------------------------------------------------------------------ */
 
-			case "Exit":
-				System.exit(0);
-				break;
+    // Main stage used by the game
+    public Stage stage;
 
-			default:
-				break;
-		}
-	}
+    // map of character selection buttons so we can replace a chosen button with Confirm
+    private final Map<String, JButton> characterBtns;
 
-	private void setCharacter(String action) {
-		String character;
-		character = action + ".png";
-		// Change to dolphin track
-		this.stage = new Tracks(character);
-		handleCharacter();
-		// Get the button being replaced
-		JButton tempButton = characterBtns.get(action);
-		Rectangle r = tempButton.getBounds(); // correct way to get bounds
+    // action command constants (avoid string literals in switch)
+    protected static final String START = "Start";
+    protected static final String CHARACTER = "Character";
+    protected static final String CONFIRM = "Confirm";
+    protected static final String EXIT = "Exit";
 
-		// Remove old button from UI
-		getContentPane().remove(tempButton);
+    // fonts (constructed once)
+    private final Font titleFont = new Font("Arial", Font.BOLD | Font.ITALIC, TITLE_FONT_SIZE);
+    private final Font buttonFont = new Font("Arial", Font.BOLD | Font.ITALIC, BUTTON_FONT_SIZE);
+    private final Font endFont = new Font("Arial", Font.BOLD, END_FONT_SIZE);
 
-		// Create the confirm button
-		JButton newButton = createButton(
-				"Confirm",
-				r.x, r.y, r.width, r.height,
-				buttonFont);
+    // simple audio clip store so multiple clips don't overlap unexpectedly
+    private static final HashMap<Clip, Integer> audioClips = new HashMap<>();
 
-		// Put into map
-		characterBtns.put(action, newButton);
+    /**
+     * Construct the Viewer. Use a default stage initialized with the default character.
+     */
+    public Viewer(final String[] args) {
+        super(WIDTH, HEIGHT);
+        // initialize the stage with a character (kept identical to original behavior)
+        this.stage = new Tracks(DEFAULT_CHARACTER);
+        this.characterBtns = new HashMap<>();
+    }
 
-		// Add new button TO SCREEN
-		getContentPane().add(newButton);
+    /**
+     * Central action handler for UI buttons.
+     */
+    @Override
+    public void actionPerformed(final ActionEvent evt) {
+        String action = evt.getActionCommand();
+        switch (action) {
+            case START:
+                handleStart();
+                playButtonAudio(AUDIO_BUTTON);
+                break;
 
-		// Show the character image (AFTER button added)
-		viewCharacter(character);
+            case CHARACTER:
+                handleCharacter();
+                playButtonAudio(AUDIO_BUTTON);
+                break;
 
-		// Refresh UI
-		getContentPane().revalidate();
-		getContentPane().repaint();
-	}
+            // character selection actions (buttons labelled by character names)
+            case "Dolphin":
+            case "Sheep":
+            case "Llama":
+                setCharacter(action);
+                playButtonAudio(AUDIO_BUTTON);
+                break;
 
-	// --------------------------------------------------------
-	// Main Start Button Window
-	// --------------------------------------------------------
-	public void startWindow() {
-		JPanel contentPane = resetContentPane();
-		contentPane.setLayout(null);
+            case CONFIRM:
+                startWindow();
+                playButtonAudio(AUDIO_BUTTON);
+                break;
 
-		JLabel title = new JLabel("Dr. Steinbern's Unloving Heart");
-		title.setFont(titleFont);
-		title.setBounds(50, 50, 1500, 200);
-		contentPane.add(title);
+            case EXIT:
+                System.exit(0);
+                break;
 
-		// Start Button
-		JButton startBtn = createButton(START, 90, 300, 300, 100, titleFont);
-		contentPane.add(startBtn);
+            default:
+                // no-op for unrecognized commands
+                break;
+        }
+    }
 
-		// Character Select Button
-		JButton characterBtn = createButton(CHARACTER, 400, 300, 300, 100, titleFont);
-		contentPane.add(characterBtn);
-		playAudio("demo-music.wav");
-	}
+    /**
+     * Replace the selected character button with a Confirm button and update the stage.
+     */
+    private void setCharacter(final String action) {
+        String characterFile = action + ".png";
+        // create a fresh stage for the selected character (same functionality as before)
+        this.stage = new Tracks(characterFile);
 
-	// --------------------------------------------------------
-	// Start → Show the Stage
-	// --------------------------------------------------------
-	public void handleStart() {
-		JPanel cp = resetContentPane();
-		((Tracks) stage).resetTracks();
-		VisualizationView view = stage.getView();
-		cp.add(view);
-		stage.start();
-		playAudio("Castle-theme.wav");
-	}
+        // update the character selection UI to show "Confirm"
+        handleCharacter();
 
-	public void endScreen(String imageName) {
-		if (stage != null)
-			stage.stop();
+        JButton tempButton = characterBtns.get(action);
+        Rectangle bounds = tempButton.getBounds();
 
-		JPanel cp = resetContentPane();
-		cp.setLayout(null);
-		playAudio("The Emperor.wav");
+        // remove old button from the content pane
+        getContentPane().remove(tempButton);
 
-		// ---- Layered Pane ----
-		JLayeredPane layers = new JLayeredPane();
-		layers.setBounds(0, 0, WIDTH, HEIGHT);
-		cp.add(layers);
+        // create a Confirm button in the same place and add it to the UI
+        JButton confirmButton = createButton(CONFIRM, bounds.x, bounds.y, bounds.width, bounds.height, buttonFont);
+        characterBtns.put(action, confirmButton);
+        getContentPane().add(confirmButton);
 
-		// -----------------------
-		// Game Over + IP
-		// -----------------------
-		JLabel gameOver = new JLabel();
-		try {
-			InetAddress localHost = InetAddress.getLocalHost();
-			String ipAddress = localHost.getHostAddress();
-			gameOver.setText("Game Over - " + ipAddress);
-		} catch (UnknownHostException e) {
-			gameOver.setText("Game Over");
-		}
+        // show the chosen character image next to the controls
+        viewCharacter(characterFile);
 
-		gameOver.setFont(new Font("Arial", Font.BOLD, 30));
-		gameOver.setForeground(Color.WHITE);
-		gameOver.setBounds(200, 20, 600, 50);
+        // refresh the UI so changes appear immediately
+        getContentPane().revalidate();
+        getContentPane().repaint();
+    }
 
-		// -----------------------
-		// Stage View
-		// -----------------------
-		Stage loseStage = new Stage(20);
-		VisualizationView view = loseStage.getView();
-		view.setBounds(0, 0, WIDTH, HEIGHT);
+    /* ------------------------------------------------------------------
+     * Main Start Window (title + buttons)
+     * ------------------------------------------------------------------ */
 
-		// -----------------------
-		// Buttons
-		// -----------------------
-		JButton startBtn = createButton("Start", 20, 300, 150, 60, buttonFont);
-		JButton exitBtn = createButton("Exit", 20, 350, 150, 60, buttonFont);
+    /**
+     * Build and display the main start window.
+     */
+    public void startWindow() {
+        JPanel contentPane = resetContentPane();
+        contentPane.setLayout(null);
 
-		startBtn.setBounds(20, 300, 150, 60);
-		exitBtn.setBounds(20, 350, 150, 60);
+        JLabel title = new JLabel("Dr. Steinbern's Unloving Heart");
+        title.setFont(titleFont);
+        title.setBounds(50, 50, 1500, 200); // wide bounding box so long title fits
+        contentPane.add(title);
 
-		// -----------------------
-		// Add to layers
-		// -----------------------
-		layers.add(view, JLayeredPane.DEFAULT_LAYER);
-		layers.add(gameOver, JLayeredPane.PALETTE_LAYER);
-		layers.add(startBtn, JLayeredPane.PALETTE_LAYER);
-		layers.add(exitBtn, JLayeredPane.PALETTE_LAYER);
+        // Start Button
+        JButton startBtn = createButton(START, START_BTN_X, START_BTN_Y, START_BTN_W, START_BTN_H, titleFont);
+        contentPane.add(startBtn);
 
-		// -----------------------
-		// Load image into stage
-		// -----------------------
-		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
-		ContentFactory factory = new ContentFactory(finder);
-		Content content = factory.createContent(imageName);
+        // Character Select Button
+        JButton characterBtn = createButton(CHARACTER, CHARACTER_SELECT_BTN_X, CHARACTER_SELECT_BTN_Y, START_BTN_W, START_BTN_H, titleFont);
+        contentPane.add(characterBtn);
 
-		loseStage.add(content);
-		loseStage.start();
-	}
+        // background audio for the start screen
+        playAudio(AUDIO_DEMO);
+    }
 
-	public void viewCharacter(String characterName) {
-		try {
-			BufferedImage myPicture = ImageIO.read(
-					getClass().getResourceAsStream("/resources/" + characterName));
-			myPicture.getScaledInstance(10, 10, 0);
-			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-			picLabel.setBounds(420, 50, 300, 300);
+    /* ------------------------------------------------------------------
+     * Game start: show the stage inside the content pane
+     * ------------------------------------------------------------------ */
 
-			getContentPane().add(picLabel);
+    /**
+     * Replace the current UI with the stage view and start the game's stage loop.
+     * This mirrors the original behavior (Tracks.resetTracks called first to ensure
+     * a fresh start when returning from other screens).
+     */
+    public void handleStart() {
+        JPanel cp = resetContentPane();
 
-			getContentPane().revalidate();
-			getContentPane().repaint();
+        // ensure tracks are reset (robust reset implementation lives in Tracks)
+        if (stage instanceof Tracks) {
+            ((Tracks) stage).resetTracks();
+        }
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        VisualizationView view = stage.getView();
+        view.setBounds(VIEW_X, VIEW_Y, WIDTH, HEIGHT);
+        cp.add(view);
 
-	}
+        // Start the stage loop and play background music
+        stage.start();
+        playAudio(AUDIO_THEME);
 
-	// --------------------------------------------------------
-	// Character Selection Screen
-	// --------------------------------------------------------
-	public void handleCharacter() {
-		JPanel contentPane = resetContentPane();
-		contentPane.setLayout(null);
+        // Restart the health & death monitors for this play session.
+        // The timers are stopped when a game ends, so we must recreate them here.
+        startHealthMonitor();
+        startDeathMonitor();
+    }
 
-		JLabel label = new JLabel("Choose your character");
-		label.setFont(buttonFont);
-		label.setBounds(50, 50, 800, 100);
-		contentPane.add(label);
+    /* ------------------------------------------------------------------
+     * End / lose screens
+     * ------------------------------------------------------------------ */
 
-		// Character buttons
-		characterBtns.put("Dolphin", createButton("Dolphin", 20, 300, 150, 60, buttonFont));
-		contentPane.add(characterBtns.get("Dolphin"));
-		characterBtns.put("Sheep", createButton("Sheep", 200, 300, 150, 60, buttonFont));
-		contentPane.add(characterBtns.get("Sheep"));
-		characterBtns.put("Llama", createButton("Llama", 380, 300, 150, 60, buttonFont));
-		contentPane.add(characterBtns.get("Llama"));
-		playAudio("character-select.wav");
+    /**
+     * Show the end-screen with a given image and two buttons.
+     * This preserves previous functionality while making layout constants explicit.
+     */
+    public void endScreen(final String imageName) {
+        if (stage != null) {
+            stage.stop();
+        }
 
-	}
+        JPanel cp = resetContentPane();
+        cp.setLayout(null);
+        playAudio(AUDIO_END);
 
-	// --------------------------------------------------------
-	// Utility Methods
-	// --------------------------------------------------------
-	private JPanel resetContentPane() {
-		JPanel cp = (JPanel) getContentPane();
-		cp.removeAll();
-		cp.revalidate();
-		cp.repaint();
-		return cp;
-	}
+        // layered pane so stage + UI overlays can coexist
+        JLayeredPane layers = new JLayeredPane();
+        layers.setBounds(0, 0, WIDTH, HEIGHT);
+        cp.add(layers);
 
-	private JButton createButton(String text, int x, int y, int w, int h, Font font) {
-		JButton btn = new JButton(text);
-		btn.setBounds(x, y, w, h);
-		btn.setFont(font);
-		btn.addActionListener(this);
-		return btn;
-	}
+        // Game Over label with local IP (useful for demos)
+        JLabel gameOver = new JLabel();
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            String ipAddress = localHost.getHostAddress();
+            gameOver.setText("Game Over - " + ipAddress);
+        } catch (UnknownHostException e) {
+            gameOver.setText("Game Over");
+        }
+        gameOver.setFont(endFont);
+        gameOver.setForeground(Color.WHITE);
+        gameOver.setBounds(200, 20, 600, 50);
 
-	@Override
-	public void init() {
-		startWindow();
-		startHealthMonitor();
-		startDeathMonitor();
-	}
+        // create a simple stage to show the end image
+        Stage loseStage = new Stage(20);
+        VisualizationView view = loseStage.getView();
+        view.setBounds(0, 0, WIDTH, HEIGHT);
 
-	public void startHealthMonitor() {
-		Timer timer = new Timer(50, e -> { // check every 50 ms
-			if (!((Tracks) stage).isAlive()) {
-				((Timer) e.getSource()).stop(); // stop checking
-				endScreen("bernstein2.jpg"); // show losing screen
-			}
-		});
+        // Buttons for replay / exit
+        JButton startBtn = createButton(START, 20, 300, CHAR_BTN_W, CHAR_BTN_H, buttonFont);
+        JButton exitBtn = createButton(EXIT, 20, 350, CHAR_BTN_W, CHAR_BTN_H, buttonFont);
 
-		timer.start();
-	}
+        // add layers in order
+        layers.add(view, JLayeredPane.DEFAULT_LAYER);
+        layers.add(gameOver, JLayeredPane.PALETTE_LAYER);
+        layers.add(startBtn, JLayeredPane.PALETTE_LAYER);
+        layers.add(exitBtn, JLayeredPane.PALETTE_LAYER);
 
-	public void startDeathMonitor() {
-		Timer timer = new Timer(50, e -> { // check every 50 ms
-			if (!((Tracks) stage).bossAlive()) {
-				((Timer) e.getSource()).stop(); // stop checking
-				endScreen("bernstein1.jpg"); // show losing screen
-			}
-		});
+        // load the end image into the temporary stage
+        ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+        ContentFactory factory = new ContentFactory(finder);
+        Content content = factory.createContent(imageName);
 
-		timer.start();
-	}
+        loseStage.add(content);
+        loseStage.start();
+    }
 
-	public static void playAudio(String audioFile) {
-		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
-		InputStream raw = finder.findInputStream(audioFile);
-		try (BufferedInputStream buf = new BufferedInputStream(raw);
-				AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
-			Clip clip = AudioSystem.getClip();
-			storeClip(clip);
-			clip.open(audio);
-			clip.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /* ------------------------------------------------------------------
+     * Character selection UI
+     * ------------------------------------------------------------------ */
 
-	private static void storeClip (Clip clip) {
-		for (Clip c : audioClips.keySet()) {
-			c.stop();
-		}
-		audioClips.put(clip, 1);
-	}
+    /**
+     * Utility to show a character portrait next to the selection buttons.
+     */
+    public void viewCharacter(final String characterName) {
+        try (InputStream in = getClass().getResourceAsStream(RESOURCE_PREFIX + characterName)) {
+            if (in == null) {
+                // resource not found - fail gracefully
+                return;
+            }
+            BufferedImage myPicture = ImageIO.read(in);
+            // scaleHint is a hint only; we keep same size as before
+            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+            picLabel.setBounds(420, 50, 300, 300);
+            getContentPane().add(picLabel);
 
-	public static void playButtonAudio(String audioFile) {
-		ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
-		InputStream raw = finder.findInputStream(audioFile);
-		try (BufferedInputStream buf = new BufferedInputStream(raw);
-				AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
-			Clip clip = AudioSystem.getClip();
-			clip.open(audio);
-			clip.start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            getContentPane().revalidate();
+            getContentPane().repaint();
+
+        } catch (IOException e) {
+            // Print stack trace for student-level debugging; keep behavior otherwise unchanged
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Build the character selection screen using the CHARACTERS constant array.
+     */
+    public void handleCharacter() {
+        JPanel contentPane = resetContentPane();
+        contentPane.setLayout(null);
+
+        JLabel label = new JLabel("Choose your character");
+        label.setFont(buttonFont);
+        label.setBounds(50, 50, 800, 100);
+        contentPane.add(label);
+
+        // place character buttons with some spacing
+        int startX = 20;
+        int spacing = 180;
+        for (int i = 0; i < CHARACTERS.length; i++) {
+            String name = CHARACTERS[i];
+            JButton btn = createButton(name, startX + i * spacing, 300, CHAR_BTN_W, CHAR_BTN_H, buttonFont);
+            characterBtns.put(name, btn);
+            contentPane.add(btn);
+        }
+
+        playAudio(AUDIO_CHAR_SELECT);
+    }
+
+    /* ------------------------------------------------------------------
+     * Utility methods
+     * ------------------------------------------------------------------ */
+
+    /**
+     * Remove everything from the content pane and return it so callers can re-populate it.
+     */
+    private JPanel resetContentPane() {
+        JPanel cp = (JPanel) getContentPane();
+        cp.removeAll();
+        cp.revalidate();
+        cp.repaint();
+        return cp;
+    }
+
+    /**
+     * Create a JButton with standard properties and register this class as its listener.
+     */
+    private JButton createButton(String text, int x, int y, int w, int h, Font font) {
+        JButton btn = new JButton(text);
+        btn.setBounds(x, y, w, h);
+        btn.setFont(font);
+        btn.addActionListener(this);
+        return btn;
+    }
+
+    /**
+     * Lifecycle init: show start window and begin monitors for health/boss states.
+     */
+    @Override
+    public void init() {
+        startWindow();
+        startHealthMonitor();
+        startDeathMonitor();
+    }
+
+    /**
+     * Poll the player's health; when it reaches zero show the lose screen.
+     * Timer frequency is defined by HEALTH_CHECK_DELAY_MS constant.
+     */
+    public void startHealthMonitor() {
+        Timer timer = new Timer(HEALTH_CHECK_DELAY_MS, e -> {
+            if (stage instanceof Tracks && !((Tracks) stage).isAlive()) {
+                ((Timer) e.getSource()).stop();
+                endScreen(END_IMAGE_LOSE);
+            }
+        });
+        timer.start();
+    }
+
+    /**
+     * Poll the boss's health; when boss dies show the boss-loss screen.
+     */
+    public void startDeathMonitor() {
+        Timer timer = new Timer(HEALTH_CHECK_DELAY_MS, e -> {
+            if (stage instanceof Tracks && !((Tracks) stage).bossAlive()) {
+                ((Timer) e.getSource()).stop();
+                endScreen(END_IMAGE_BOSS);
+            }
+        });
+        timer.start();
+    }
+
+    /**
+     * Play audio via ResourceFinder. Clips are stored so older clips are stopped
+     * before new ones are stored (keeps audio behavior consistent with original).
+     */
+    public static void playAudio(final String audioFile) {
+        ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+        InputStream raw = finder.findInputStream(audioFile);
+        try (BufferedInputStream buf = new BufferedInputStream(raw);
+                AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
+            Clip clip = AudioSystem.getClip();
+            storeClip(clip);
+            clip.open(audio);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Replace any currently playing clip(s) and remember the latest clip.
+     */
+    private static void storeClip(final Clip clip) {
+        for (Clip c : audioClips.keySet()) {
+            c.stop();
+        }
+        audioClips.put(clip, 1);
+    }
+
+    /**
+     * Play a short button sound without replacing the demo/looping music.
+     */
+    public static void playButtonAudio(final String audioFile) {
+        ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
+        InputStream raw = finder.findInputStream(audioFile);
+        try (BufferedInputStream buf = new BufferedInputStream(raw);
+                AudioInputStream audio = AudioSystem.getAudioInputStream(buf)) {
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

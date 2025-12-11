@@ -22,7 +22,7 @@ public class Tracks extends Stage {
 
 	private String playerName;
 
-	public Tracks(String playerName) {
+	public Tracks(final String playerName) {
 		super(50);
 		this.playerName = playerName;
 		makeTracks();
@@ -98,13 +98,11 @@ public class Tracks extends Stage {
 
 	public void resetTracks() {
 		
-		// 1. Stop the stage loop
+		// Stop the stage loop
 		this.stop();
 
-		// 2. Debug log
-		System.err.println("Resetting Tracks...");
 
-		// 3. Remove all sprites from the stage (clear Stage internals)
+		// Remove all sprites from the stage (clear Stage internals)
 		try {
 			this.clear(); // remove all sprites added via add(...)
 		} catch (NoSuchMethodError | NoClassDefFoundError e) {
@@ -112,7 +110,7 @@ public class Tracks extends Stage {
 			System.err.println("Stage.clear() unavailable; falling back to view removal.");
 		}
 
-		// 4. Also clear visualization view contents (images/contents previously added)
+		// Also clear visualization view contents (images/contents previously added)
 		try {
 			VisualizationView view = this.getView();
 			if (view != null) {
@@ -123,7 +121,7 @@ public class Tracks extends Stage {
 		}
 
 
-		// 6. Reset existing health bars (if present) to ensure no leftover state
+		// Reset existing health bars (if present) to ensure no leftover state
 		if (healthBar != null) {
 			try {
 				healthBar.reset();
@@ -139,10 +137,10 @@ public class Tracks extends Stage {
 			}
 		}
 
-		// 7. Rebuild stage (creates fresh sprites and bars)
+		// Rebuild stage (creates fresh sprites and bars)
 		makeTracks();
 
-		// 8. Start again
+		// Start again
 		this.start();
 	}
 

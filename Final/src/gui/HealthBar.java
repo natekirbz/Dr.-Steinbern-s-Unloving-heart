@@ -25,7 +25,7 @@ public class HealthBar extends RuleBasedSprite {
     private double width;
     private double height;
 
-    public HealthBar(double width, double height, AggregateContent ac) {
+    public HealthBar(final double width, final double height, final AggregateContent ac) {
         super(ac);
         this.currentWidth = (float) width;
         // use the AggregateContent that was passed in (it's the content attached to the sprite)
@@ -55,7 +55,7 @@ public class HealthBar extends RuleBasedSprite {
     }
 
     // Shrink from the right by using scale
-    public void shrink(double amount) {
+    public void shrink(final double amount) {
         // clamp amount so we don't go below zero
         float amt = (float) amount;
         if (amt < 0) return;
@@ -103,7 +103,7 @@ public class HealthBar extends RuleBasedSprite {
     }
 
     @Override
-    public void handleTick(int arg0) {
+    public void handleTick(final int arg0) {
         //do
     }
 }

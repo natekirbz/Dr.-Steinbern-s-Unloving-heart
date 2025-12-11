@@ -24,7 +24,7 @@ public class Boss extends RuleBasedSprite{
     private float grayFactor = 1.0f; 
 
 
-    public Boss(TransformableContent[] contents, double width, double height, int health) {
+    public Boss(final TransformableContent[] contents, final double width, final double height, final int health) {
         super(contents[0]);
         this.contents = contents;
         this.maxX = width;
@@ -59,7 +59,7 @@ public class Boss extends RuleBasedSprite{
 
 
     @Override
-    public void handleTick(int time) {
+    public void handleTick(final int time) {
         Iterator<Sprite> i = this.antagonists.iterator();
 
         while(i.hasNext()) {
