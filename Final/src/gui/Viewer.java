@@ -138,6 +138,7 @@ public class Viewer extends JApplication implements ActionListener {
 
             case CHARACTER:
                 handleCharacter();
+				playAudio(AUDIO_CHAR_SELECT, false);
                 playButtonAudio(AUDIO_BUTTON);
                 break;
 
@@ -229,7 +230,7 @@ public class Viewer extends JApplication implements ActionListener {
         contentPane.add(characterBtn);
 
         // background audio for the start screen
-        playAudio(AUDIO_DEMO);
+        playAudio(AUDIO_DEMO, false);
     }
 
     /*
@@ -257,7 +258,7 @@ public class Viewer extends JApplication implements ActionListener {
 
         // Start the stage loop and play background music
         stage.start();
-        playAudio(AUDIO_THEME);
+        playAudio(AUDIO_THEME, true);
 
         // Restart the health & death monitors for this play session.
         // The timers are stopped when a game ends, so we must recreate them here.
@@ -284,7 +285,7 @@ public class Viewer extends JApplication implements ActionListener {
 
         JPanel cp = resetContentPane();
         cp.setLayout(null);
-        playAudio(AUDIO_END);
+        playAudio(AUDIO_END, false);
 
         // layered pane so stage + UI overlays can coexist
         JLayeredPane layers = new JLayeredPane();
@@ -383,8 +384,6 @@ public class Viewer extends JApplication implements ActionListener {
             characterBtns.put(name, btn);
             contentPane.add(btn);
         }
-
-        playAudio(AUDIO_CHAR_SELECT);
     }
 
     /*
@@ -467,7 +466,7 @@ public class Viewer extends JApplication implements ActionListener {
      * Play audio via ResourceFinder. Clips are stored so older clips are stopped
      * before new ones are stored (keeps audio behavior consistent with original).
      */
-    public static void playAudio(final String audioFile) {
+    public static void playAudio(final String audioFile, final boolean loop) {
         ResourceFinder finder = ResourceFinder.createInstance(Marker.class);
         InputStream raw = finder.findInputStream(audioFile);
         try (BufferedInputStream buf = new BufferedInputStream(raw);
@@ -475,7 +474,13 @@ public class Viewer extends JApplication implements ActionListener {
             Clip clip = AudioSystem.getClip();
             storeClip(clip);
             clip.open(audio);
-            clip.start();
+
+			if (loop) {
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
+			} else {
+				clip.start();
+			}
+            // clip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
